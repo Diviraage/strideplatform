@@ -1,0 +1,365 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: S.T.R.I.D.E. Platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: results
+    description: Assessment result operations
+  - name: admin
+    description: Admin panel operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "409":
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current session user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current session
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /results:
+    post:
+      operationId: saveResult
+      tags: [results]
+      summary: Save a new assessment result
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResultInput"
+      responses:
+        "201":
+          description: Result saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Result"
+
+  /results/my:
+    get:
+      operationId: getMyResults
+      tags: [results]
+      summary: Get all results for current user
+      responses:
+        "200":
+          description: List of user results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Result"
+
+  /results/{id}:
+    get:
+      operationId: getResult
+      tags: [results]
+      summary: Get a single result by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Result detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Result"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get platform statistics (admin only)
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/users:
+    get:
+      operationId: getAdminUsers
+      tags: [admin]
+      summary: Get all users (admin only)
+      responses:
+        "200":
+          description: List of users with result counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+
+  /admin/results:
+    get:
+      operationId: getAdminResults
+      tags: [admin]
+      summary: Get all results across all users (admin only)
+      responses:
+        "200":
+          description: All assessment results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Result"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    OkResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required: [ok]
+
+    RegisterInput:
+      type: object
+      required: [email, password, name]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        age:
+          type: ["integer", "null"]
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    User:
+      type: object
+      required: [id, email, name, isAdmin]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        age:
+          type: ["integer", "null"]
+        isAdmin:
+          type: boolean
+
+    AuthResponse:
+      type: object
+      required: [user]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+
+    ResultInput:
+      type: object
+      required: [profile, cogPct, enPct, adPct, tagline, answers]
+      properties:
+        profile:
+          type: string
+        cogPct:
+          type: integer
+        enPct:
+          type: integer
+        adPct:
+          type: integer
+        tagline:
+          type: string
+        answers:
+          type: object
+          additionalProperties: true
+
+    Result:
+      type: object
+      required: [id, profile, cogPct, enPct, adPct, tagline, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: ["integer", "null"]
+        userName:
+          type: ["string", "null"]
+        profile:
+          type: string
+        cogPct:
+          type: integer
+        enPct:
+          type: integer
+        adPct:
+          type: integer
+        tagline:
+          type: string
+        answers:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+
+    AdminStats:
+      type: object
+      required: [totalUsers, totalResults, avgCogPct, profileCounts]
+      properties:
+        totalUsers:
+          type: integer
+        totalResults:
+          type: integer
+        avgCogPct:
+          type: integer
+        avgEnPct:
+          type: integer
+        avgAdPct:
+          type: integer
+        profileCounts:
+          type: object
+          additionalProperties:
+            type: integer
+
+    AdminUser:
+      type: object
+      required: [id, email, name, isAdmin, resultCount]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        age:
+          type: ["integer", "null"]
+        isAdmin:
+          type: boolean
+        resultCount:
+          type: integer
+        lastProfile:
+          type: ["string", "null"]
+        lastResultAt:
+          type: ["string", "null"]
