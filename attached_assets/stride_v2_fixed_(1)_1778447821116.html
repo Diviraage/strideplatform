@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Future is NOW · S.T.R.I.D.E.</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pur:#6B21D6;--yel:#C8FF00;--yel2:#EAFF5E;--teal:#00D4A8;--coral:#FF7F50;
+  --bg:#1A0A3D;--glass:rgba(255,255,255,.08);--glass2:rgba(255,255,255,.14);
+  --txt:#fff;--txm:rgba(255,255,255,.68);--txs:rgba(255,255,255,.4);
+  --bdr:rgba(255,255,255,.14);--bdr2:rgba(255,255,255,.07);
+  --fn:'Unbounded',sans-serif;--fb:'Manrope',sans-serif;
+  --r:12px;--rl:20px
+}
+html,body{min-height:100vh;font-family:var(--fb);color:var(--txt);background:var(--bg);overflow-x:hidden}
+.bg-blob{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-blob::before{content:'';position:absolute;top:-15%;left:-10%;width:65%;height:65%;background:radial-gradient(ellipse,rgba(107,33,214,.45) 0%,transparent 70%);animation:bl 9s ease-in-out infinite alternate}
+.bg-blob::after{content:'';position:absolute;bottom:-15%;right:-5%;width:55%;height:55%;background:radial-gradient(ellipse,rgba(200,255,0,.1) 0%,transparent 70%);animation:bl 11s ease-in-out infinite alternate-reverse}
+@keyframes bl{0%{transform:scale(1)}100%{transform:scale(1.12) translate(2%,2%)}}
+
+/* ── TOPBAR ── */
+.bar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(26,10,61,.88);backdrop-filter:blur(18px);border-bottom:.5px solid var(--bdr2)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-badge{background:var(--yel);color:var(--bg);font-family:var(--fn);font-size:12px;font-weight:900;padding:5px 11px;border-radius:8px}
+.brand-txt .t1{font-family:var(--fn);font-size:13px;font-weight:700}
+.brand-txt .t2{font-size:10px;color:var(--txm)}
+.phases{display:flex;gap:5px}
+.ph{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;border:.5px solid var(--bdr);font-family:var(--fn);font-size:10px;color:var(--txs);transition:all .3s;white-space:nowrap}
+.ph .d{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.4}
+.ph.cur{color:var(--yel);border-color:var(--yel);background:rgba(200,255,0,.1)}
+.ph.cur .d{opacity:1}
+.ph.ok{color:var(--teal);border-color:var(--teal);background:rgba(0,212,168,.08)}
+.ph.ok .d{background:var(--teal);opacity:1}
+@media(max-width:560px){.phases{display:none}}
+
+/* ── WRAP ── */
+.wrap{position:relative;z-index:1;max-width:840px;margin:0 auto;padding:0 16px 64px}
+
+/* ── SCREENS ── */
+.scr{display:none;padding-top:28px}
+.scr.on{display:block;animation:si .35s ease}
+@keyframes si{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TYPOGRAPHY ── */
+.eyebrow{font-family:var(--fn);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--yel);margin-bottom:10px}
+.h1{font-family:var(--fn);font-size:clamp(26px,5vw,42px);font-weight:900;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
+.h1 em{color:var(--yel);font-style:normal}
+.h2{font-family:var(--fn);font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
+.lead{font-size:14px;color:var(--txm);line-height:1.7;margin-bottom:24px}
+
+/* ── CARDS ── */
+.gc{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--rl);padding:18px}
+.gc2{background:rgba(255,255,255,.04);border:.5px solid var(--bdr2);border-radius:var(--r);padding:14px}
+.gc.yb{border-color:rgba(200,255,0,.3)}
+.gc.tb{border-color:rgba(0,212,168,.25)}
+
+/* ── PHASE CARDS (intro) ── */
+.pc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:26px}
+.pc{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--rl);padding:18px 14px;position:relative;overflow:hidden;transition:transform .2s;cursor:default}
+.pc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--yel);transform:scaleX(0);transform-origin:left;transition:.3s}
+.pc:hover{transform:translateY(-2px)}
+.pc:hover::after{transform:scaleX(1)}
+.pc .num{font-family:var(--fn);font-size:9px;letter-spacing:.15em;color:var(--txs);margin-bottom:8px}
+.pc .ico{font-size:24px;margin-bottom:8px}
+.pc .nm{font-family:var(--fn);font-size:12px;color:var(--yel);margin-bottom:5px}
+.pc .ds{font-size:11px;color:var(--txm);line-height:1.55}
+
+/* ── CALLOUTS ── */
+.cl{border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+.cl.y{background:rgba(200,255,0,.08);border:.5px solid rgba(200,255,0,.28)}
+.cl.t{background:rgba(0,212,168,.08);border:.5px solid rgba(0,212,168,.25)}
+.cl.p{background:rgba(107,33,214,.18);border:.5px solid rgba(107,33,214,.45)}
+.cl-t{font-family:var(--fn);font-size:10px;color:var(--yel);margin-bottom:4px}
+.cl-b{font-size:12px;color:var(--txm);line-height:1.6}
+
+/* ── BUTTONS ── */
+.bp{display:inline-flex;align-items:center;gap:7px;background:var(--yel);color:var(--bg);border:none;border-radius:var(--r);padding:11px 22px;font-size:13px;font-weight:700;font-family:var(--fn);cursor:pointer;transition:all .2s}
+.bp:hover{background:var(--yel2);transform:translateY(-1px)}
+.bp:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.bs{display:inline-flex;align-items:center;gap:7px;background:var(--glass);color:var(--txm);border:.5px solid var(--bdr);border-radius:var(--r);padding:10px 20px;font-size:13px;font-family:var(--fn);cursor:pointer;transition:all .2s}
+.bs:hover{border-color:rgba(255,255,255,.35);color:var(--txt)}
+.bg_{background:none;border:none;color:var(--txs);font-size:13px;font-family:var(--fb);cursor:pointer;padding:8px;transition:color .2s}
+.bg_:hover{color:var(--txt)}
+.brow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+
+/* ── PROGRESS ── */
+.pb{height:3px;background:var(--glass);border-radius:100px;margin-bottom:18px;overflow:hidden}
+.pb .f{height:100%;background:var(--yel);border-radius:100px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* ── QUESTION ── */
+.qcard{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--rl);padding:20px;margin-bottom:14px}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.qtag{font-family:var(--fn);font-size:9px;letter-spacing:.13em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:.5px solid var(--bdr2);color:var(--txs)}
+.qn{font-family:var(--fn);font-size:10px;color:var(--txs)}
+.qt{font-size:15px;font-weight:500;line-height:1.55;margin-bottom:6px}
+.qctx{font-size:12px;color:var(--txs);font-style:italic;padding:8px 11px;background:var(--glass2);border-radius:8px;margin-bottom:14px;line-height:1.55}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.04);border:.5px solid var(--bdr);border-radius:var(--r);padding:11px 13px;cursor:pointer;font-size:13px;color:var(--txm);line-height:1.5;text-align:left;transition:all .2s;width:100%;font-family:var(--fb)}
+.opt:hover{border-color:rgba(200,255,0,.4);background:rgba(200,255,0,.06);color:var(--txt)}
+.opt.sel{border-color:var(--yel);background:rgba(200,255,0,.1);color:var(--txt);border-width:1.5px}
+.ol{font-family:var(--fn);font-size:9px;color:var(--txs);flex-shrink:0;margin-top:2px;width:13px}
+.opt.sel .ol{color:var(--yel)}
+
+/* scale */
+.sc-row{display:flex;align-items:center;gap:10px;margin:10px 0 4px}
+.sc-l{font-size:11px;color:var(--txs);white-space:nowrap}
+.sc-v{font-family:var(--fn);font-size:20px;font-weight:700;color:var(--yel);min-width:20px;text-align:center}
+input[type=range]{flex:1;accent-color:var(--yel)}
+.sc-d{font-size:11px;color:var(--txs);text-align:center;margin-top:4px}
+
+/* ── TABS ── */
+.tnav{display:flex;gap:3px;border-bottom:.5px solid var(--bdr2);margin-bottom:18px}
+.tab{background:none;border:none;padding:9px 14px;font-size:12px;font-family:var(--fn);color:var(--txs);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-.5px;transition:all .2s}
+.tab:hover{color:var(--txt)}
+.tab.on{color:var(--yel);border-bottom-color:var(--yel)}
+.tp{display:none}.tp.on{display:block}
+
+/* ── BARS ── */
+.bbar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bbar-l{font-size:12px;color:var(--txm);width:130px;flex-shrink:0}
+.bbar-t{flex:1;height:7px;background:var(--glass);border-radius:100px;overflow:hidden}
+.bbar-f{height:100%;border-radius:100px;transition:width 1s ease}
+.bbar-v{font-family:var(--fn);font-size:11px;color:var(--txs);width:30px;text-align:right}
+
+/* ── GAUGE ── */
+.gauge{text-align:center;padding:20px 0 14px}
+.gauge-n{font-family:var(--fn);font-size:52px;font-weight:900;line-height:1}
+.gauge-u{font-size:18px;color:var(--txs)}
+.gauge-l{font-size:13px;color:var(--txm);margin-top:5px}
+.gauge-bar{height:8px;background:var(--glass);border-radius:100px;overflow:hidden;margin:12px 0}
+.gauge-f{height:100%;border-radius:100px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+@media(max-width:560px){.g2,.g3,.pc-grid{grid-template-columns:1fr}}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:34px}
+.tl::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:1px;background:var(--bdr)}
+.tl-it{position:relative;padding-bottom:18px}
+.tl-d{position:absolute;left:-29px;top:2px;width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fn);font-size:7px;font-weight:700;z-index:1}
+.tl-c{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--r);padding:12px 14px}
+.tl-p{font-family:var(--fn);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txs);margin-bottom:3px}
+.tl-n{font-size:13px;font-weight:600;margin-bottom:5px}
+.tl-t{font-size:11px;color:var(--txm);line-height:1.6;margin-bottom:7px}
+.tl-pills{display:flex;flex-wrap:wrap;gap:4px}
+.tl-pill{font-size:9px;font-family:var(--fn);padding:2px 7px;border-radius:100px;border:.5px solid rgba(200,255,0,.3);background:rgba(200,255,0,.07);color:var(--yel2)}
+
+/* ── PROF ── */
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:14px}
+.pi{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .2s}
+.pi:hover{border-color:rgba(200,255,0,.35)}
+.pi.sel{border-color:var(--yel);background:rgba(200,255,0,.09);border-width:1.5px}
+.pi-n{font-size:13px;font-weight:600;margin-bottom:2px}
+.pi-c{font-size:9px;font-family:var(--fn);letter-spacing:.1em;text-transform:uppercase;color:var(--txs)}
+.pi-d{font-size:11px;color:var(--txm);margin-top:3px}
+.swrap{position:relative;margin-bottom:10px}
+.swrap input{width:100%;padding:9px 13px 9px 33px;font-size:13px;border:.5px solid var(--bdr);border-radius:var(--r);background:var(--glass);color:var(--txt);font-family:var(--fb)}
+.swrap input::placeholder{color:var(--txs)}
+.sico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--txs)}
+.cfs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.cf{font-size:10px;font-family:var(--fn);padding:3px 11px;border-radius:100px;border:.5px solid var(--bdr);background:none;cursor:pointer;color:var(--txs);transition:all .2s}
+.cf:hover,.cf.on{background:rgba(200,255,0,.09);border-color:rgba(200,255,0,.35);color:var(--yel)}
+
+/* ── TEST SELECTOR ── */
+.ts-g{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.ts{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--r);padding:13px;cursor:pointer;text-align:center;transition:all .2s}
+.ts:hover{border-color:rgba(200,255,0,.3)}
+.ts.sel{border-color:var(--yel);background:rgba(200,255,0,.08)}
+.ts .ico{font-size:22px;margin-bottom:6px}
+.ts .nm{font-family:var(--fn);font-size:11px;font-weight:700;margin-bottom:2px}
+.ts .sb{font-size:10px;color:var(--txs)}
+
+/* ── DUR/FREQ ── */
+.dg{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.db{background:var(--glass);border:.5px solid var(--bdr);border-radius:9px;padding:7px 13px;cursor:pointer;font-size:12px;font-family:var(--fn);color:var(--txm);transition:all .2s}
+.db:hover{border-color:rgba(200,255,0,.3)}
+.db.sel{border-color:var(--yel);background:rgba(200,255,0,.1);color:var(--yel)}
+.fg{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.fb{background:var(--glass);border:.5px solid var(--bdr);border-radius:8px;padding:7px 11px;cursor:pointer;font-size:11px;font-family:var(--fn);color:var(--txm);transition:all .2s;min-width:44px;text-align:center}
+.fb:hover{border-color:rgba(200,255,0,.3)}
+.fb.sel{border-color:var(--yel);background:rgba(200,255,0,.1);color:var(--yel)}
+
+/* ── AI OUT ── */
+.ao{background:rgba(255,255,255,.04);border:.5px solid var(--bdr);border-radius:var(--r);padding:14px;font-size:13px;line-height:1.8;color:var(--txm);min-height:70px;white-space:pre-wrap}
+.al{display:flex;align-items:center;gap:9px;color:var(--txs);font-size:13px}
+.ds{display:flex;gap:3px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--yel);animation:bk 1.2s ease infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bk{0%,80%,100%{opacity:.15}40%{opacity:1}}
+
+/* ── MAP ITEMS ── */
+.rmap{display:flex;flex-direction:column;gap:7px}
+.rm{display:flex;gap:13px;align-items:flex-start;background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--r);padding:11px 13px}
+.rm-i{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fn);font-size:10px;font-weight:700;flex-shrink:0}
+.rm-t{font-size:13px;font-weight:600;margin-bottom:2px}
+.rm-d{font-size:11px;color:var(--txm);line-height:1.6}
+
+/* ── SYNTH CARDS ── */
+.scg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.scc{background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--r);padding:13px;text-align:center}
+.scc-v{font-family:var(--fn);font-size:11px;font-weight:700;margin-bottom:3px;word-break:break-word;line-height:1.3}
+.scc-n{font-size:9px;color:var(--txs);font-family:var(--fn);letter-spacing:.07em}
+.scc-bar{height:4px;background:var(--glass);border-radius:100px;overflow:hidden;margin-top:8px}
+.scc-f{height:100%;border-radius:100px}
+
+/* ── PROFILE BANNER ── */
+.profb{background:linear-gradient(135deg,rgba(200,255,0,.1),rgba(107,33,214,.2));border:.5px solid rgba(200,255,0,.25);border-radius:24px;padding:22px;margin-bottom:18px;text-align:center}
+.profb-l{font-family:var(--fn);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--yel);margin-bottom:6px}
+.profb-n{font-family:var(--fn);font-size:24px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.profb-d{font-size:13px;color:var(--txm);line-height:1.65;max-width:460px;margin:0 auto}
+
+/* ── VISION ── */
+.vb{background:linear-gradient(135deg,rgba(107,33,214,.28),rgba(0,212,168,.1));border:.5px solid rgba(0,212,168,.28);border-radius:var(--rl);padding:18px;margin-bottom:14px}
+.vb-l{font-family:var(--fn);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:7px}
+.vb-t{font-family:var(--fn);font-size:16px;font-weight:700;margin-bottom:9px}
+.vb-b{font-size:13px;color:var(--txm);line-height:1.8}
+
+/* ── PDF SECTION ── */
+.pdf-hero{text-align:center;background:var(--glass);border:.5px solid var(--bdr);border-radius:var(--rl);padding:22px 16px 20px;margin-bottom:14px}
+.pdf-ico{font-size:44px;margin-bottom:10px}
+.pdf-t{font-family:var(--fn);font-size:17px;font-weight:700;margin-bottom:7px}
+.pdf-s{font-size:13px;color:var(--txm);margin-bottom:18px;max-width:380px;margin-left:auto;margin-right:auto}
+.cb-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:18px}
+.cb-row label{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--txm);cursor:pointer}
+.wi{font-size:12px;color:var(--txm);line-height:2}
+.wi li{list-style:none;padding-left:17px;position:relative}
+.wi li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+.sep{border:none;border-top:.5px solid var(--bdr2);margin:18px 0}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:.5px solid var(--bdr2)}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+
+/* canvas hidden helper */
+#pdfCanvas{position:absolute;left:-9999px;top:-9999px}
+</style>
+</head>
+<body>
+<div class="bg-blob"></div>
+<canvas id="pdfCanvas" width="794" height="1123"></canvas>
+
+<!-- TOPBAR -->
+<div class="bar">
+  <div class="brand">
+    <div class="brand-badge">FUTURE IS NOW</div>
+    <div class="brand-txt"><div class="t1">S.T.R.I.D.E. Pro</div><div class="t2">Psychometric Intelligence Platform</div></div>
+  </div>
+  <div class="phases" id="phases">
+    <div class="ph cur" id="ph0"><div class="d"></div>УСВІДОМЛЮЙ</div>
+    <div class="ph" id="ph1"><div class="d"></div>ПРОЄКТУЙ</div>
+    <div class="ph" id="ph2"><div class="d"></div>ДІЙ</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══ УСВІДОМЛЮЙ: INTRO ═══ -->
+<div class="scr on" id="scr-intro">
+  <div class="eyebrow">Форум Старшокласників · ЛІКО-школа · 16.05</div>
+  <div class="h1">Майбутнє починається <em>зараз</em></div>
+  <div class="lead">Не просто тест — система координат, що розкриє архітектуру твого мислення та перетворить її на стратегію життя.</div>
+  <div class="pc-grid">
+    <div class="pc"><div class="num">01 · УСВІДОМЛЮЙ</div><div class="ico">🧠</div><div class="nm">ТЕСТ</div><div class="ds">S.T.R.I.D.E. + Big Five + 16Personalities — три виміри, одна карта потенціалу</div></div>
+    <div class="pc"><div class="num">02 · ПРОЄКТУЙ</div><div class="ico">🗺️</div><div class="nm">КАРТА РОЗВИТКУ</div><div class="ds">Синтез профілів, вибір професії та персональна траєкторія до 100% відповідності</div></div>
+    <div class="pc"><div class="num">03 · ДІЙ</div><div class="ico">🚀</div><div class="nm">ПЛАН + PDF</div><div class="ds">Динамічний план з ментором, візія майбутнього та якісний PDF-звіт із діаграмами</div></div>
+  </div>
+  <div class="cl y"><div class="cl-t">💡 ГНУЧКИЙ СТАРТ</div><div class="cl-b">Пройди тільки S.T.R.I.D.E. і одразу отримай PDF. Або додай Big Five та 16Personalities для глибшого синтезу.</div></div>
+  <div class="brow">
+    <button class="bp" onclick="A.tests=['stride'];initStride();goTo('stride')">Розпочати S.T.R.I.D.E. →</button>
+    <button class="bs" onclick="goTo('choose')">Обрати набір тестів</button>
+  </div>
+</div>
+
+<!-- ═══ УСВІДОМЛЮЙ: CHOOSE ═══ -->
+<div class="scr" id="scr-choose">
+  <div class="eyebrow">01 · УСВІДОМЛЮЙ</div>
+  <div class="h2">Оберіть набір тестів</div>
+  <div class="cl t mb16"><div class="cl-t">S.T.R.I.D.E. — обов'язковий базовий тест</div><div class="cl-b">Big Five та 16Personalities — опціонально. Більше тестів = точніший синтез.</div></div>
+  <div class="ts-g mb20">
+    <div class="ts sel" id="t-stride" onclick="toggleT('stride',this)"><div class="ico">🧠</div><div class="nm">S.T.R.I.D.E.</div><div class="sb">Обов'язковий</div></div>
+    <div class="ts" id="t-b5" onclick="toggleT('b5',this)"><div class="ico">📊</div><div class="nm">Big Five</div><div class="sb">OCEAN модель</div></div>
+    <div class="ts" id="t-16p" onclick="toggleT('16p',this)"><div class="ico">🎭</div><div class="nm">16Personalities</div><div class="sb">MBTI-based</div></div>
+  </div>
+  <button class="bp" onclick="startTests()">Розпочати →</button>
+  <div class="nav"><button class="bg_" onclick="goTo('intro')">← Назад</button></div>
+</div>
+
+<!-- ═══ УСВІДОМЛЮЙ: STRIDE ═══ -->
+<div class="scr" id="scr-stride">
+  <div class="pb mb16"><div class="f" id="pb-s" style="width:0%"></div></div>
+  <div class="eyebrow">01 · УСВІДОМЛЮЙ · S.T.R.I.D.E.</div>
+  <div class="h2">Архітектура мислення</div>
+  <div id="sblk"></div>
+  <div class="nav">
+    <button class="bg_" onclick="sBack()">← Назад</button>
+    <button class="bp" id="sn" disabled onclick="sNext()">Далі →</button>
+  </div>
+</div>
+
+<!-- ═══ УСВІДОМЛЮЙ: BIG FIVE ═══ -->
+<div class="scr" id="scr-b5">
+  <div class="pb mb16"><div class="f" id="pb-b5" style="width:0%"></div></div>
+  <div class="eyebrow">01 · УСВІДОМЛЮЙ · BIG FIVE (OCEAN)</div>
+  <div class="h2">Особистісний вимір</div>
+  <div class="cl p mb14"><div class="cl-t">Про Big Five</div><div class="cl-b">Найнаукоємніша модель особистості. Вимірює 5 рис: Відкритість, Сумлінність, Екстраверсія, Доброзичливість, Нейротизм.<br>Офіційний тест: <a href="https://insightfultraits.com/lp/oceantest4/" target="_blank" style="color:var(--yel)">insightfultraits.com</a></div></div>
+  <div id="b5blk"></div>
+  <div class="nav">
+    <button class="bg_" onclick="goTo('stride')">← Назад</button>
+    <button class="bp" id="b5n" disabled onclick="b5Next()">Далі →</button>
+  </div>
+</div>
+
+<!-- ═══ УСВІДОМЛЮЙ: 16P ═══ -->
+<div class="scr" id="scr-16p">
+  <div class="pb mb16"><div class="f" id="pb-16p" style="width:0%"></div></div>
+  <div class="eyebrow">01 · УСВІДОМЛЮЙ · 16PERSONALITIES</div>
+  <div class="h2">Тип особистості</div>
+  <div class="cl p mb14"><div class="cl-t">Про 16Personalities</div><div class="cl-b">Засновано на теорії MBTI. 4 дихотомії: E/I, S/N, T/F, J/P.<br>Офіційний тест: <a href="https://www.16personalities.com/free-personality-test" target="_blank" style="color:var(--yel)">16personalities.com</a></div></div>
+  <div id="p16blk"></div>
+  <div class="nav">
+    <button class="bg_" onclick="p16Back()">← Назад</button>
+    <button class="bp" id="p16n" disabled onclick="p16Next()">Далі →</button>
+  </div>
+</div>
+
+<!-- ═══ ПРОЄКТУЙ: SYNTH ═══ -->
+<div class="scr" id="scr-synth">
+  <div class="eyebrow">02 · ПРОЄКТУЙ · СИНТЕЗ ПРОФІЛІВ</div>
+  <div class="h2">Твоя карта потенціалу</div>
+  <div class="profb mb20">
+    <div class="profb-l">S.T.R.I.D.E. Профіль</div>
+    <div class="profb-n" id="sp-name">—</div>
+    <div class="profb-d" id="sp-desc">—</div>
+  </div>
+  <div class="scg mb16" id="scg"></div>
+  <div class="tnav">
+    <button class="tab on" onclick="stab(this,'tp-s')">S.T.R.I.D.E.</button>
+    <button class="tab" id="tab-b5" onclick="stab(this,'tp-b5')">Big Five</button>
+    <button class="tab" id="tab-16p" onclick="stab(this,'tp-16p')">16P</button>
+    <button class="tab" onclick="stab(this,'tp-ai')">Синтез ШІ</button>
+  </div>
+  <div class="tp on" id="tp-s"><div id="sr-bars"></div></div>
+  <div class="tp" id="tp-b5"><div id="b5-bars"></div></div>
+  <div class="tp" id="tp-16p"><div id="p16-block"></div></div>
+  <div class="tp" id="tp-ai"><div class="ao" id="ai-synth"><div class="al"><div class="ds"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Аналізую профіль...</div></div></div>
+  <div class="nav">
+    <button class="bg_" onclick="synthBack()">← Назад</button>
+    <div style="display:flex;gap:8px">
+      <button class="bs" onclick="goTo('pdf')">PDF без профілю →</button>
+      <button class="bp" onclick="goTo('prof')">Обрати професію →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ПРОЄКТУЙ: PROF ═══ -->
+<div class="scr" id="scr-prof">
+  <div class="eyebrow">02 · ПРОЄКТУЙ · БАЗА ПРОФЕСІЙ</div>
+  <div class="h2">Аналіз відповідності</div>
+  <div class="swrap mb12"><span class="sico">⌕</span><input type="text" id="prof-s" placeholder="Пошук професії..." oninput="filterP()"></div>
+  <div class="cfs" id="cfs"></div>
+  <div class="pg" id="pg"></div>
+  <div id="psel" style="display:none">
+    <div class="sep"></div>
+    <div class="eyebrow mb12">Тести для аналізу</div>
+    <div class="ts-g mb14">
+      <div class="ts sel" data-t="stride" onclick="togglePT(this)"><div class="ico">🧠</div><div class="nm">S.T.R.I.D.E.</div><div class="sb">Когнітивний</div></div>
+      <div class="ts" data-t="b5" id="pt-b5" onclick="togglePT(this)"><div class="ico">📊</div><div class="nm">Big Five</div><div class="sb">OCEAN</div></div>
+      <div class="ts" data-t="16p" id="pt-16p" onclick="togglePT(this)"><div class="ico">🎭</div><div class="nm">16P</div><div class="sb">MBTI</div></div>
+    </div>
+    <button class="bp" onclick="runMatch()">Аналізувати відповідність →</button>
+  </div>
+  <div class="nav">
+    <button class="bg_" onclick="goTo('synth')">← Назад</button>
+    <button class="bp" id="pnxt" disabled onclick="goTo('results')">Результат →</button>
+  </div>
+</div>
+
+<!-- ═══ ДІЙ: RESULTS ═══ -->
+<div class="scr" id="scr-results">
+  <div class="eyebrow">03 · ДІЙ · КАРТА РОЗВИТКУ</div>
+  <div class="h2">Результати аналізу</div>
+  <div class="tnav">
+    <button class="tab on" onclick="stab(this,'r-match')">Відповідність</button>
+    <button class="tab" onclick="stab(this,'r-vision')">Візія &amp; План</button>
+    <button class="tab" onclick="stab(this,'r-map')">Карта розвитку</button>
+    <button class="tab" onclick="stab(this,'r-mentor')">Ментор</button>
+  </div>
+
+  <div class="tp on" id="r-match">
+    <div class="gauge">
+      <div class="gauge-n" id="g-num" style="color:var(--yel)">—<span class="gauge-u">%</span></div>
+      <div class="gauge-l" id="g-lbl">відповідність</div>
+      <div class="gauge-bar"><div class="gauge-f" id="g-fill" style="width:0%"></div></div>
+    </div>
+    <div class="g2 mb16" id="g-cards"></div>
+    <div class="eyebrow mb8">ШІ-аналіз відповідності</div>
+    <div class="ao" id="ai-match"><div class="al"><div class="ds"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Аналізую...</div></div>
+  </div>
+
+  <div class="tp" id="r-vision">
+    <div class="vb mb16">
+      <div class="vb-l">ВІЗІЯ 2030+</div>
+      <div class="vb-t" id="vis-t">Будуємо образ майбутнього...</div>
+      <div class="vb-b ao" id="vis-b" style="background:none;border:none;padding:0"><div class="al"><div class="ds"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Генерую...</div></div>
+    </div>
+    <div class="eyebrow mb12">Динамічний конструктор траєкторій</div>
+    <div class="gc mb12">
+      <div style="font-size:12px;color:var(--txm);margin-bottom:10px">Термін роботи з ментором:</div>
+      <div class="dg" id="dg"></div>
+      <div style="font-size:12px;color:var(--txm);margin-bottom:9px">Частота зустрічей на тиждень:</div>
+      <div class="fg" id="fg"></div>
+      <button class="bp" onclick="genTraj()">Згенерувати траєкторію →</button>
+    </div>
+    <div class="ao" id="ai-traj" style="display:none"></div>
+  </div>
+
+  <div class="tp" id="r-map">
+    <div class="eyebrow mb8">Карта саморозвитку до 100%</div>
+    <div class="rmap mb14" id="rmap"></div>
+    <div class="eyebrow mb8">ШІ-рекомендації по кожному блоку</div>
+    <div class="ao" id="ai-map"><div class="al"><div class="ds"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Будую карту...</div></div>
+  </div>
+
+  <div class="tp" id="r-mentor">
+    <div class="eyebrow mb8">Менторський роудмеп</div>
+    <div class="tl mb14" id="mtl"></div>
+    <div class="sep"></div>
+    <div class="gc2 mb16" style="text-align:center">
+      <div style="font-family:var(--fn);font-size:10px;color:var(--yel);letter-spacing:.1em;margin-bottom:10px">ФОРМАТ ЗУСТРІЧІ · 45–60 ХВ</div>
+      <div class="g2">
+        <div><div style="font-size:22px;font-family:var(--fn);font-weight:700;color:var(--yel)">5′</div><div style="font-size:11px;color:var(--txm)">Ретроспектива</div></div>
+        <div><div style="font-size:22px;font-family:var(--fn);font-weight:700;color:var(--teal)">20′</div><div style="font-size:11px;color:var(--txm)">Інтел. штурм</div></div>
+        <div><div style="font-size:22px;font-family:var(--fn);font-weight:700;color:var(--yel)">15′</div><div style="font-size:11px;color:var(--txm)">Стратег. план</div></div>
+        <div><div style="font-size:22px;font-family:var(--fn);font-weight:700;color:var(--teal)">5′</div><div style="font-size:11px;color:var(--txm)">Енерго-чек</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="bg_" onclick="goTo('prof')">← Назад</button>
+    <button class="bp" onclick="goTo('pdf')">Завантажити PDF →</button>
+  </div>
+</div>
+
+<!-- ═══ ДІЙ: PDF ═══ -->
+<div class="scr" id="scr-pdf">
+  <div class="eyebrow">03 · ДІЙ · ЗВІТ</div>
+  <div class="h2">Завантажити PDF</div>
+  <div class="pdf-hero mb14">
+    <div class="pdf-ico">📄</div>
+    <div class="pdf-t">Персональний звіт Future is NOW</div>
+    <div class="pdf-s">Обери розділи — і завантаж красивий PDF із діаграмами та аналітикою</div>
+    <div class="cb-row">
+      <label><input type="checkbox" id="cb-s" checked style="accent-color:var(--yel)"> S.T.R.I.D.E.</label>
+      <label><input type="checkbox" id="cb-b5" style="accent-color:var(--yel)"> Big Five</label>
+      <label><input type="checkbox" id="cb-16p" style="accent-color:var(--yel)"> 16Personalities</label>
+      <label><input type="checkbox" id="cb-p" style="accent-color:var(--yel)"> Аналіз професії</label>
+      <label><input type="checkbox" id="cb-m" style="accent-color:var(--yel)"> Менторський план</label>
+    </div>
+    <button class="bp" id="pdf-btn" onclick="genPDF()">⬇ Згенерувати та завантажити PDF</button>
+  </div>
+  <div class="gc">
+    <div style="font-family:var(--fn);font-size:10px;color:var(--yel);letter-spacing:.1em;margin-bottom:12px">ЩО ВКЛЮЧАЄ ПОВНИЙ ЗВІТ</div>
+    <ul class="wi">
+      <li>Когнітивний профіль S.T.R.I.D.E. — 3 вектори з діаграмою</li>
+      <li>Big Five OCEAN — радарна діаграма 5 рис</li>
+      <li>16Personalities — тип та опис</li>
+      <li>ШІ-синтез трьох профілів</li>
+      <li>Аналіз відповідності з gauge-діаграмою</li>
+      <li>Карта саморозвитку з кроками</li>
+      <li>Візія майбутнього (персоналізована)</li>
+      <li>Менторський роудмеп на обраний термін</li>
+    </ul>
+  </div>
+  <div class="nav">
+    <button class="bg_" onclick="goTo('results')">← Назад</button>
+    <button class="bs" onclick="goTo('intro');resetAll()">↺ Пройти заново</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ══════════════════════════════════
+//  STATE
+// ══════════════════════════════════
+const A = {
+  tests:['stride'],
+  s:{}, b5:{}, p16:{},
+  profile:'', b5type:'', p16type:'', p16scores:{},
+  selProf:null, profTests:['stride'],
+  matchPct:0, dur:3, freq:2,
+  aiTexts:{}
+};
+const G = id => document.getElementById(id);
+let curScr = 'intro';
+
+// ══════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════
+const PHASE_MAP = {
+  'intro':0,'choose':0,'stride':0,'b5':0,'16p':0,
+  'synth':1,'prof':1,
+  'results':2,'pdf':2
+};
+function goTo(id){
+  G('scr-'+curScr).classList.remove('on');
+  G('scr-'+id).classList.add('on');
+  curScr = id;
+  const n = PHASE_MAP[id] ?? 1;
+  for(let i=0;i<3;i++){
+    G('ph'+i).className='ph'+(i<n?' ok':i===n?' cur':'');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════
+//  TEST CHOOSER
+// ══════════════════════════════════
+function toggleT(t, el){
+  if(t==='stride') return;
+  el.classList.toggle('sel');
+  A.tests = el.classList.contains('sel')
+    ? [...new Set([...A.tests,t])]
+    : A.tests.filter(x=>x!==t);
+}
+function startTests(){ initStride(); goTo('stride'); }
+
+// ══════════════════════════════════
+//  STRIDE TEST
+// ══════════════════════════════════
+const SQS = [
+  {bl:'Когнітивний процесинг', q:'Ти отримав доступ до складної системи, яка працює — але ніхто не знає як. Твій перший крок?', ctx:'Це може бути незрозумілий код, економіка міста або правила нової гри.',
+   opts:[{v:'analysis',t:'Буду ламати її по частинах — побачу, що відвалиться'},{v:'synthesis',t:'Спостерігатиму за входом/виходом — виведу закономірність'},{v:'algorithm',t:'Шукатиму документацію або аналоги з минулого досвіду'}]},
+  {bl:'Когнітивний процесинг', q:'Що тебе більше захоплює при вивченні нової теми?', ctx:null,
+   opts:[{v:'deep',t:'Занурення в одну деталь до повного розуміння'},{v:'wide',t:'Швидке охоплення всієї картини — контекст важливіший'},{v:'mixed',t:'Спочатку загальна картина, потім ключові вузли'}]},
+  {bl:'Когнітивний процесинг', q:'Наскільки комфортно пояснювати «справедливість» без прикладів з реального життя?', ctx:'Шкала 1–10', scale:true},
+  {bl:'Енергозатрати', q:'Що змушує тебе забути про обід?', ctx:null,
+   opts:[{v:'intel',t:'Пошук помилки в логіці або задачі, яка не давала спокою'},{v:'result',t:'Створення гарного результату, який всі оцінять'},{v:'social',t:'Організація чогось корисного для інших людей'}]},
+  {bl:'Енергозатрати', q:'Що тебе зупинить швидше під час роботи над проєктом?', ctx:null,
+   opts:[{v:'physical',t:'Фізична втома — просто хочу спати'},{v:'bored',t:'Нудьга — я вже зрозумів принцип, далі нецікаво'},{v:'fear',t:'Страх помилитися або бути осудженим'}]},
+  {bl:'Енергозатрати', q:'Як зазвичай виконуєш великі завдання?', ctx:null,
+   opts:[{v:'flow',t:'Занурюсь на 3–4 години в одну задачу без перерв'},{v:'multi',t:'Перемикаюсь між кількома завданнями — так легше'},{v:'deadline',t:'Починаю активно лише коли є дедлайн і тиск'}]},
+  {bl:'Адаптивність', q:'Ти витратив місяць на теорію й знайшов критичну помилку. Твоя реакція?', ctx:null,
+   opts:[{v:'assertive',t:'Спокійно проаналізую — помилка дає нове розуміння. Почну заново.'},{v:'turbulent',t:'Відчую сильне розчарування, зроблю довгу паузу.'},{v:'avoid',t:'Спробую «підігнати» дані, щоб не переробляти.'}]},
+  {bl:'Адаптивність', q:'Тобі дали завдання без інструкцій, термінів і критеріїв. Твій стан?', ctx:null,
+   opts:[{v:'free',t:'Чудово — сам вирішу, як зробити найкраще'},{v:'coord',t:'Трохи дратує — потрібні хоча б базові координати'},{v:'stuck',t:'Не можу почати без розуміння критеріїв успіху'}]},
+];
+let sQ=0;
+function initStride(){ sQ=0; A.s={}; renderSQ(); }
+function renderSQ(){
+  const pct = sQ/SQS.length*100;
+  G('pb-s').style.width = pct+'%';
+  if(sQ >= SQS.length){ calcStride(); afterStride(); return; }
+  const q = SQS[sQ];
+  let h = `<div class="qcard"><div class="qmeta"><span class="qtag">${q.bl}</span><span class="qn">${sQ+1} / ${SQS.length}</span></div><div class="qt">${q.q}</div>${q.ctx?`<div class="qctx">${q.ctx}</div>`:''}`;
+  if(q.scale){
+    h += `<div class="sc-row"><span class="sc-l">Некомфортно</span><input type="range" min="1" max="10" value="5" id="abs-sc" oninput="A.s.abs=+this.value;G('abs-v').textContent=this.value;G('sn').disabled=false"><span class="sc-v" id="abs-v">5</span><span class="sc-l">Комфортно</span></div><div class="sc-d">Нейтральний рівень абстракції</div>`;
+  } else {
+    h += `<div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="sPick('${o.v}',this)"><span class="ol">${String.fromCharCode(65+i)}</span>${o.t}</button>`).join('')}</div>`;
+  }
+  h += `</div>`;
+  G('sblk').innerHTML = h;
+  G('sn').disabled = !q.scale;
+}
+function sPick(v,el){
+  el.parentNode.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  A.s[sQ] = v;
+  G('sn').disabled = false;
+}
+function sNext(){ if(!G('sn').disabled){ sQ++; renderSQ(); G('sn').disabled=true; } }
+function sBack(){ if(sQ>0){ sQ--; renderSQ(); G('sn').disabled=false; } else goTo('choose'); }
+function calcStride(){
+  let c=0,e=0,ad=0;
+  if(A.s[0]==='synthesis')c+=3;else if(A.s[0]==='analysis')c+=2;else c+=1;
+  if(A.s[1]==='deep')c+=2;else if(A.s[1]==='mixed')c+=1;
+  c+=Math.round((A.s.abs||5)/10*3);
+  if(A.s[3]==='intel')e+=3;else if(A.s[3]==='result')e+=2;else e+=1;
+  if(A.s[4]==='bored')e+=2;else if(A.s[4]==='physical')e+=1;
+  if(A.s[5]==='flow')e+=2;else if(A.s[5]==='multi')e+=1;
+  if(A.s[6]==='assertive')ad+=3;else if(A.s[6]==='turbulent')ad+=2;else ad+=1;
+  if(A.s[7]==='free')ad+=2;else if(A.s[7]==='coord')ad+=1;
+  A.s.cog=Math.round(c/8*100);
+  A.s.energy=Math.round(e/6*100);
+  A.s.adapt=Math.round(ad/5*100);
+  const cg=A.s.cog,eg=A.s.energy,ag=A.s.adapt;
+  if(cg>75&&ag>68) A.profile='Системний Архітектор';
+  else if(cg>70&&eg>70) A.profile='Синтетичний Дослідник';
+  else if(ag<50) A.profile='Глибинний Спеціаліст';
+  else A.profile='Адаптивний Стратег';
+}
+function afterStride(){
+  if(A.tests.includes('b5')){ initB5(); goTo('b5'); }
+  else if(A.tests.includes('16p')){ initP16(); goTo('16p'); }
+  else{ buildSynth(); goTo('synth'); }
+}
+
+// ══════════════════════════════════
+//  BIG FIVE
+// ══════════════════════════════════
+const B5QS=[
+  {tr:'openness',pos:true,q:'Мені подобається досліджувати абстрактні ідеї та концепції'},
+  {tr:'conscientiousness',pos:true,q:'Я зазвичай ретельно планую роботу та дотримуюся плану'},
+  {tr:'extraversion',pos:true,q:'Я легко знаходжу енергію від спілкування з людьми'},
+  {tr:'agreeableness',pos:true,q:'Для мене важлива гармонія у відносинах з оточенням'},
+  {tr:'neuroticism',pos:true,q:'Я часто відчуваю тривогу або хвилювання перед невизначеністю'},
+  {tr:'openness',pos:true,q:'Мені цікавіше придумувати нові підходи, ніж слідувати перевіреним методам'},
+  {tr:'conscientiousness',pos:true,q:'Я завжди виконую зобов\'язання, навіть коли складно'},
+  {tr:'extraversion',pos:false,q:'Після тривалого спілкування мені потрібен час на самоті'},
+  {tr:'agreeableness',pos:true,q:'Мені важливо, щоб усі у групі почувалися добре'},
+  {tr:'neuroticism',pos:false,q:'Я рідко переживаю через помилки та швидко рухаюсь далі'},
+];
+const B5LBLS=['Зовсім не погоджуюсь','Не погоджуюсь','Нейтрально','Погоджуюсь','Повністю погоджуюсь'];
+let b5Q=0;
+function initB5(){
+  b5Q=0;
+  A.b5={openness:50,conscientiousness:50,extraversion:50,agreeableness:50,neuroticism:50};
+  renderB5Q();
+}
+function renderB5Q(){
+  G('pb-b5').style.width=(b5Q/B5QS.length*100)+'%';
+  if(b5Q>=B5QS.length){ calcB5(); afterB5(); return; }
+  const q=B5QS[b5Q];
+  G('b5blk').innerHTML=`<div class="qcard"><div class="qmeta"><span class="qtag">Big Five · ${q.tr}</span><span class="qn">${b5Q+1} / ${B5QS.length}</span></div><div class="qt">${q.q}</div><div class="opts">${B5LBLS.map((l,i)=>`<button class="opt" onclick="b5Pick(${i},this)"><span class="ol">${i+1}</span>${l}</button>`).join('')}</div></div>`;
+  G('b5n').disabled=true;
+}
+function b5Pick(v,el){
+  el.parentNode.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  const q=B5QS[b5Q];
+  A.b5[q.tr]=q.pos?Math.round(v/4*100):Math.round((4-v)/4*100);
+  G('b5n').disabled=false;
+  setTimeout(()=>{ b5Q++; renderB5Q(); },260);
+}
+function b5Next(){ b5Q++; renderB5Q(); }
+function calcB5(){
+  const op=A.b5.openness, co=A.b5.conscientiousness, ex=A.b5.extraversion;
+  if(op>72&&co>68) A.b5type='Відкритий Організатор';
+  else if(op>75) A.b5type='Творчий Дослідник';
+  else if(co>75) A.b5type='Точний Виконавець';
+  else if(ex>65) A.b5type='Соціальний Провідник';
+  else A.b5type='Аналітичний Інтроверт';
+}
+function afterB5(){
+  if(A.tests.includes('16p')){ initP16(); goTo('16p'); }
+  else{ buildSynth(); goTo('synth'); }
+}
+
+// ══════════════════════════════════
+//  16 PERSONALITIES
+// ══════════════════════════════════
+const P16QS=[
+  {dim:'EI',q:'На вечірці ти скоріше ініціюєш нові знайомства, ніж чекаєш',p:'E',m:'I'},
+  {dim:'SN',q:'Я більше довіряю своїй інтуїції, ніж конкретним фактам',p:'N',m:'S'},
+  {dim:'TF',q:'Під час конфлікту я зосереджуюся на логіці, а не на почуттях',p:'T',m:'F'},
+  {dim:'JP',q:'Мені комфортніше, коли все заплановано заздалегідь',p:'J',m:'P'},
+  {dim:'EI',q:'Після важкого дня я заряджаюся від спілкування з друзями',p:'E',m:'I'},
+  {dim:'SN',q:'Мене більше цікавлять теоретичні концепції, ніж практичні деталі',p:'N',m:'S'},
+  {dim:'TF',q:'Я можу приймати складні рішення без емоційного забарвлення',p:'T',m:'F'},
+  {dim:'JP',q:'Мені подобається залишати варіанти відкритими, не поспішати з рішенням',p:'P',m:'J'},
+];
+const P16LBLS=['Не погоджуюсь','Скоріше ні','Нейтрально','Скоріше так','Погоджуюсь'];
+let p16Q=0;
+const p16Sc={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+function initP16(){
+  p16Q=0;
+  Object.keys(p16Sc).forEach(k=>p16Sc[k]=0);
+  renderP16Q();
+}
+function renderP16Q(){
+  G('pb-16p').style.width=(p16Q/P16QS.length*100)+'%';
+  if(p16Q>=P16QS.length){ calcP16(); buildSynth(); goTo('synth'); return; }
+  const q=P16QS[p16Q];
+  G('p16blk').innerHTML=`<div class="qcard"><div class="qmeta"><span class="qtag">16P · ${q.dim}</span><span class="qn">${p16Q+1} / ${P16QS.length}</span></div><div class="qt">${q.q}</div><div class="opts">${P16LBLS.map((l,i)=>`<button class="opt" onclick="p16Pick('${q.p}','${q.m}',${i},this)"><span class="ol">${i+1}</span>${l}</button>`).join('')}</div></div>`;
+  G('p16n').disabled=true;
+}
+function p16Pick(pl,mn,v,el){
+  el.parentNode.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  p16Sc[pl]+=(v+1); p16Sc[mn]+=(5-v);
+  G('p16n').disabled=false;
+  setTimeout(()=>{ p16Q++; renderP16Q(); },260);
+}
+function p16Next(){ p16Q++; renderP16Q(); }
+function p16Back(){
+  if(A.tests.includes('b5')) goTo('b5');
+  else goTo('stride');
+}
+function calcP16(){
+  A.p16type=[p16Sc.E>p16Sc.I?'E':'I',p16Sc.N>p16Sc.S?'N':'S',p16Sc.T>p16Sc.F?'T':'F',p16Sc.J>p16Sc.P?'J':'P'].join('');
+  A.p16scores={...p16Sc};
+}
+
+// ══════════════════════════════════
+//  SYNTHESIS
+// ══════════════════════════════════
+const PDESC={
+  'Системний Архітектор':'Твій мозок оптимізований під побудову логічних моделей у хаосі. Ти бачиш структури там, де інші бачать шум.',
+  'Синтетичний Дослідник':'Ти збираєш пазли з різних галузей і бачиш зв\'язки, які інші пропускають. Сила — у створенні нових концепцій.',
+  'Глибинний Спеціаліст':'Твоя сила — у граничній концентрації. Здатний досягти рідкісної глибини знань у своїй галузі.',
+  'Адаптивний Стратег':'Ти вміло балансуєш між аналізом і дією. Здатний адаптуватися та вести інших у невизначеності.'
+};
+function buildSynth(){
+  const c=A.s.cog||70, e=A.s.energy||65, ad=A.s.adapt||72;
+  G('sp-name').textContent = A.profile;
+  G('sp-desc').textContent = PDESC[A.profile]||'';
+
+  // synth cards
+  let sg = `<div class="scc"><div class="scc-v" style="color:#C8FF00">${A.profile}</div><div class="scc-n">S.T.R.I.D.E.</div><div class="scc-bar"><div class="scc-f" style="width:${c}%;background:#C8FF00"></div></div></div>`;
+  if(A.tests.includes('b5')) sg+=`<div class="scc"><div class="scc-v" style="color:#00D4A8">${A.b5type}</div><div class="scc-n">Big Five</div><div class="scc-bar"><div class="scc-f" style="width:${A.b5.openness||50}%;background:#00D4A8"></div></div></div>`;
+  if(A.tests.includes('16p')) sg+=`<div class="scc"><div class="scc-v" style="color:#FF7F50;font-size:20px;font-weight:900">${A.p16type}</div><div class="scc-n">16Personalities</div><div class="scc-bar"><div class="scc-f" style="width:65%;background:#FF7F50"></div></div></div>`;
+  G('scg').innerHTML = sg;
+
+  // stride bars
+  G('sr-bars').innerHTML=[
+    {l:'Когнітивний процесинг',v:c,col:'#C8FF00'},
+    {l:'Енергоефективність',v:e,col:'#00D4A8'},
+    {l:'Адаптивність',v:ad,col:'#FF7F50'}
+  ].map(b=>`<div class="bbar"><span class="bbar-l">${b.l}</span><div class="bbar-t"><div class="bbar-f" style="width:${b.v}%;background:${b.col}"></div></div><span class="bbar-v">${b.v}%</span></div>`).join('');
+
+  // b5 tab
+  if(A.tests.includes('b5')){
+    G('tab-b5').style.display='';
+    G('b5-bars').innerHTML=[
+      {l:'Відкритість',v:A.b5.openness||50,col:'#C8FF00'},
+      {l:'Сумлінність',v:A.b5.conscientiousness||50,col:'#00D4A8'},
+      {l:'Екстраверсія',v:A.b5.extraversion||50,col:'#6B21D6'},
+      {l:'Доброзичливість',v:A.b5.agreeableness||50,col:'#FF7F50'},
+      {l:'Нейротизм',v:A.b5.neuroticism||50,col:'#D4537E'}
+    ].map(b=>`<div class="bbar"><span class="bbar-l">${b.l}</span><div class="bbar-t"><div class="bbar-f" style="width:${b.v}%;background:${b.col}"></div></div><span class="bbar-v">${b.v}%</span></div>`).join('');
+  } else { G('tab-b5').style.display='none'; }
+
+  // 16p tab
+  if(A.tests.includes('16p')){
+    G('tab-16p').style.display='';
+    const TD={'INTJ':'Стратег-Архітектор','INTP':'Логік-Дослідник','ENTJ':'Командир','ENTP':'Полемік','INFJ':'Адвокат','INFP':'Медіатор','ENFJ':'Протагоніст','ENFP':'Активіст','ISTJ':'Адміністратор','ISFJ':'Захисник','ESTJ':'Менеджер','ESFJ':'Консул','ISTP':'Майстер','ISFP':'Авантюрист','ESTP':'Підприємець','ESFP':'Розважальник'};
+    G('p16-block').innerHTML=`<div class="gc2" style="text-align:center"><div style="font-family:var(--fn);font-size:36px;font-weight:900;color:#FF7F50;margin-bottom:4px">${A.p16type}</div><div style="font-size:14px;color:var(--txm)">${TD[A.p16type]||'Унікальний тип'}</div></div>`;
+  } else { G('tab-16p').style.display='none'; }
+
+  // enable b5/16p in prof test selectors
+  ['b5','16p'].forEach(t=>{
+    const el=G('pt-'+t);
+    if(el){ el.style.opacity=A.tests.includes(t)?'1':'.3'; el.style.pointerEvents=A.tests.includes(t)?'all':'none'; }
+  });
+
+  // update pdf checkboxes
+  G('cb-b5').disabled = !A.tests.includes('b5');
+  G('cb-16p').disabled = !A.tests.includes('16p');
+
+  // ai synth
+  callAI(buildSynthPrompt(), 'ai-synth');
+
+  renderProfs();
+  buildDurFreq();
+}
+function buildSynthPrompt(){
+  let p=`Ти — психометричний аналітик. Синтезуй профіль:\nS.T.R.I.D.E.: "${A.profile}", когнітивний=${A.s.cog}%, енергія=${A.s.energy}%, адаптивність=${A.s.adapt}%`;
+  if(A.tests.includes('b5')) p+=`\nBig Five: відкритість=${A.b5.openness}%, сумлінність=${A.b5.conscientiousness}%, тип="${A.b5type}"`;
+  if(A.tests.includes('16p')) p+=`\n16Personalities: ${A.p16type}`;
+  p+=`\n\nНадай стислий синтез (5-7 речень) українською: ключові риси, узгодженість між тестами, унікальне поєднання для самореалізації.`;
+  return p;
+}
+function synthBack(){
+  if(A.tests.includes('16p')) goTo('16p');
+  else if(A.tests.includes('b5')) goTo('b5');
+  else goTo('stride');
+}
+function stab(el,id){
+  el.parentNode.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  G(id).parentNode.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  G(id).classList.add('on');
+}
+
+// ══════════════════════════════════
+//  PROFESSIONS
+// ══════════════════════════════════
+const PROFS=[
+  {id:'aieng',name:'AI/ML Engineer',cat:'Tech',desc:'Розробка та навчання моделей ШІ',req:{cog:82,adp:70,op:85,co:72}},
+  {id:'sysarch',name:'Systems Architect',cat:'Tech',desc:'Проєктування складних IT-систем',req:{cog:90,adp:75,op:80,co:80}},
+  {id:'datascien',name:'Data Scientist',cat:'Tech',desc:'Аналіз даних та побудова моделей',req:{cog:85,adp:65,op:75,co:80}},
+  {id:'cybersec',name:'Cybersecurity Spec.',cat:'Tech',desc:'Захист цифрових систем',req:{cog:80,adp:70,op:70,co:85}},
+  {id:'uxres',name:'UX Researcher',cat:'Design',desc:'Дослідження користувацького досвіду',req:{cog:65,adp:72,op:82,co:65}},
+  {id:'stratcons',name:'Strategy Consultant',cat:'Business',desc:'Розробка бізнес-стратегій',req:{cog:85,adp:80,op:85,co:75}},
+  {id:'ventcap',name:'Venture Capitalist',cat:'Finance',desc:'Інвестиції в стартапи',req:{cog:80,adp:85,op:90,co:65}},
+  {id:'biotech',name:'Biotech Researcher',cat:'Science',desc:'Науково-дослідна робота у біотехнологіях',req:{cog:92,adp:58,op:87,co:90}},
+  {id:'quant',name:'Quant Analyst',cat:'Finance',desc:'Математичне моделювання фінансів',req:{cog:95,adp:60,op:70,co:85}},
+  {id:'prodmgr',name:'Product Manager',cat:'Business',desc:'Управління розробкою продукту',req:{cog:72,adp:80,op:75,co:78}},
+  {id:'neuros',name:'Neuroscientist',cat:'Science',desc:'Дослідження мозку та нервової системи',req:{cog:95,adp:55,op:90,co:88}},
+  {id:'roboeng',name:'Robotics Engineer',cat:'Tech',desc:'Розробка роботизованих систем',req:{cog:88,adp:70,op:80,co:82}},
+  {id:'ethicai',name:'AI Ethics Researcher',cat:'Humanities',desc:'Дослідження етики ШІ',req:{cog:80,adp:75,op:90,co:72}},
+  {id:'spaceing',name:'Aerospace Engineer',cat:'Engineering',desc:'Проєктування космічних систем',req:{cog:92,adp:68,op:80,co:88}},
+  {id:'crypto',name:'Blockchain Developer',cat:'Tech',desc:'Розробка блокчейн-рішень',req:{cog:85,adp:72,op:80,co:75}},
+  {id:'climat',name:'Climate Scientist',cat:'Science',desc:'Дослідження кліматичних систем',req:{cog:85,adp:65,op:85,co:82}},
+];
+const CATS=['Всі',...[...new Set(PROFS.map(p=>p.cat))]];
+let selCat='Всі', profAnalysisTests=['stride'];
+function renderProfs(){
+  G('cfs').innerHTML=CATS.map(c=>`<button class="cf${c==='Всі'?' on':''}" onclick="catSel('${c}',this)">${c}</button>`).join('');
+  filterP();
+}
+function catSel(c,el){ selCat=c; G('cfs').querySelectorAll('.cf').forEach(b=>b.classList.remove('on')); el.classList.add('on'); filterP(); }
+function filterP(){
+  const q=(G('prof-s')||{value:''}).value.toLowerCase();
+  const f=PROFS.filter(p=>(selCat==='Всі'||p.cat===selCat)&&(p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));
+  G('pg').innerHTML=f.map(p=>`<div class="pi${A.selProf&&A.selProf.id===p.id?' sel':''}" onclick="selP('${p.id}',this)"><div class="pi-n">${p.name}</div><div class="pi-c">${p.cat}</div><div class="pi-d">${p.desc}</div></div>`).join('');
+}
+function selP(id,el){
+  G('pg').querySelectorAll('.pi').forEach(i=>i.classList.remove('sel'));
+  el.classList.add('sel');
+  A.selProf=PROFS.find(p=>p.id===id);
+  G('psel').style.display='block';
+}
+function togglePT(el){
+  const t=el.dataset.t;
+  el.classList.toggle('sel');
+  profAnalysisTests=el.classList.contains('sel')?[...new Set([...profAnalysisTests,t])]:profAnalysisTests.filter(x=>x!==t);
+}
+function runMatch(){
+  if(!A.selProf) return;
+  A.profTests=[...profAnalysisTests];
+  calcMatch(); buildResults();
+  G('pnxt').disabled=false;
+  goTo('results');
+}
+function calcMatch(){
+  const p=A.selProf, c=A.s.cog||70, ad=A.s.adapt||72;
+  let tot=0, cnt=0;
+  if(A.profTests.includes('stride')){
+    tot+=100-Math.max(0,Math.abs(c-(p.req.cog||80)));
+    tot+=100-Math.max(0,Math.abs(ad-(p.req.adp||70)));
+    cnt+=2;
+  }
+  if(A.profTests.includes('b5')&&A.tests.includes('b5')){
+    tot+=100-Math.max(0,Math.abs((A.b5.openness||50)-(p.req.op||75)));
+    tot+=100-Math.max(0,Math.abs((A.b5.conscientiousness||50)-(p.req.co||75)));
+    cnt+=2;
+  }
+  if(A.profTests.includes('16p')&&A.tests.includes('16p')){
+    tot+=(A.p16type.includes('N')?80:48)+(A.p16type.includes('T')?78:52);
+    cnt+=2;
+  }
+  A.matchPct=cnt>0?Math.max(28,Math.min(94,Math.round(tot/cnt))):65;
+}
+
+// ══════════════════════════════════
+//  RESULTS BUILD
+// ══════════════════════════════════
+function buildResults(){
+  const pct=A.matchPct, col=pct>75?'#C8FF00':pct>55?'#00D4A8':'#FF7F50';
+  G('g-num').innerHTML=pct+'<span class="gauge-u">%</span>';
+  G('g-num').style.color=col;
+  G('g-lbl').textContent='відповідність · '+(A.selProf?.name||'');
+  G('g-fill').style.width=pct+'%'; G('g-fill').style.background=col;
+  G('g-cards').innerHTML=`<div class="gc2" style="text-align:center"><div style="font-family:var(--fn);font-size:26px;font-weight:700;color:${col}">${pct}%</div><div style="font-size:11px;color:var(--txm)">поточна відповідність</div></div><div class="gc2" style="text-align:center"><div style="font-family:var(--fn);font-size:26px;font-weight:700;color:#FF7F50">${100-pct}%</div><div style="font-size:11px;color:var(--txm)">gap до 100%</div></div>`;
+
+  callAI(`Ти — кар'єрний стратег. Аналіз відповідності:\nПрофіль: "${A.profile}" (ког=${A.s.cog}%, адп=${A.s.adapt}%)\n${A.tests.includes('b5')?`Big Five: відкритість=${A.b5.openness}%, тип="${A.b5type}"\n`:''}${A.tests.includes('16p')?`16P: ${A.p16type}\n`:''}\nПрофесія: ${A.selProf?.name} — ${A.selProf?.desc}\nВідповідність: ${pct}%\n\nНапиши аналіз (5-6 речень) українською: які риси відповідають, де розриви, яка головна перевага.`,'ai-match');
+
+  const steps=[
+    {ico:'HS',col:'#C8FF00',bg:'rgba(200,255,0,.1)',t:'Hard Skills',d:`Технічні компетенції для ${A.selProf?.name||'обраної ролі'}`},
+    {ico:'SS',col:'#00D4A8',bg:'rgba(0,212,168,.1)',t:'Systemic Skills',d:'Когнітивні патерни та способи мислення'},
+    {ico:'EG',col:'#BA7517',bg:'rgba(186,117,23,.1)',t:'Energy Guard',d:'Захист ресурсу та профілактика вигорання'},
+    {ico:'PF',col:'#D85A30',bg:'rgba(216,90,48,.1)',t:'Portfolio',d:'Реальні проєкти та докази компетентності'},
+    {ico:'NT',col:'#8B45E8',bg:'rgba(139,69,232,.1)',t:'Network',d:'Ментори, спільноти, зовнішня верифікація'},
+  ];
+  G('rmap').innerHTML=steps.map(s=>`<div class="rm"><div class="rm-i" style="background:${s.bg};color:${s.col}">${s.ico}</div><div><div class="rm-t">${s.t}</div><div class="rm-d">${s.d}</div></div></div>`).join('');
+
+  callAI(`Ти — коуч розвитку. Склади карту саморозвитку — 6 конкретних кроків для досягнення 100% відповідності:\nПрофіль: "${A.profile}"\n${A.tests.includes('16p')?`Тип: ${A.p16type}\n`:''}\nПрофесія: ${A.selProf?.name}\nВідповідність: ${pct}%\n\nКожен крок: назва, конкретна дія, таймлайн. Нумерований список. Українська.`,'ai-map');
+
+  buildVision();
+  buildMentor();
+}
+function buildVision(){
+  const mode=A.dur<=2?'Спринт':A.dur<=6?'Інтенсив':'Трансформація';
+  G('vis-t').textContent=`${A.dur} міс. · ${mode} · ${A.freq}×/тижд.`;
+  callAI(`Сформуй "Візію майбутнього" (Vision 2030+):\nПрофіль: "${A.profile}"\n${A.selProf?`Ціль: ${A.selProf.name}\n`:''}\nТермін: ${A.dur} місяців, ${A.freq} зустрічей/тижд.\n\nНапиши яскравий образ "себе через рік" (4-5 речень). Конкретний, мотивуючий. Українська.`,'vis-b');
+}
+function buildMentor(){
+  const d=A.dur, f=A.freq, tot=Math.round(d*4*f);
+  const items=[];
+  if(d>=1) items.push({d:'М1',col:'#C8FF00',bg:'rgba(200,255,0,.1)',p:'Місяць 1',n:'Запуск системи',t:`Аналіз профілю, контракт розвитку, PKM-система. ${Math.round(4*f)} сесій.`,pills:['PKM/Zettelkasten','Інвентаризація','Energy Guard']});
+  if(d>=3) items.push({d:'М3',col:'#00D4A8',bg:'rgba(0,212,168,.1)',p:'Місяці 2–3',n:'Прототипування',t:`Перший MVP, Learning by Building. ${Math.round(8*f)} сесій.`,pills:['Hard Skills старт','Перший проєкт','Дебати з ментором']});
+  if(d>=6) items.push({d:'М6',col:'#FF7F50',bg:'rgba(255,127,80,.1)',p:'Місяці 4–6',n:'Масштабування',t:`Хакатони, конкурси, Feedback Loops. ${Math.round(12*f)} сесій.`,pills:['Пітч-презентація','Змагання','Portfolio']});
+  if(d>=9) items.push({d:'М9',col:'#8B45E8',bg:'rgba(139,69,232,.1)',p:'Місяці 7–9',n:'Верифікація',t:`Стажування або публікація результатів. ${Math.round(12*f)} сесій.`,pills:['Стажування','Публікація','Зовн. партнери']});
+  if(d>=12) items.push({d:'М12',col:'#C8FF00',bg:'rgba(200,255,0,.1)',p:'Місяці 10–12',n:'Автономія',t:`Портфоліо готове, вибір ВНЗ/кар'єри. ${Math.max(1,f-2)}×/тижд.`,pills:['Портфоліо','Вибір траєкторії','Незалежність']});
+  G('mtl').innerHTML=items.map(i=>`<div class="tl-it"><div class="tl-d" style="background:${i.bg};color:${i.col}">${i.d}</div><div class="tl-c"><div class="tl-p">${i.p} · ${Math.round(tot/items.length)} сесій</div><div class="tl-n">${i.n}</div><div class="tl-t">${i.t}</div><div class="tl-pills">${i.pills.map(p=>`<span class="tl-pill">${p}</span>`).join('')}</div></div></div>`).join('');
+}
+
+// ══════════════════════════════════
+//  DUR / FREQ SELECTORS
+// ══════════════════════════════════
+function buildDurFreq(){
+  G('dg').innerHTML=[1,2,3,4,5,6,7,8,9,10,11,12].map(d=>`<button class="db${d===A.dur?' sel':''}" onclick="selDur(${d},this)">${d} міс.</button>`).join('');
+  G('fg').innerHTML=[1,2,3,4,5,6,7].map(f=>`<button class="fb${f===A.freq?' sel':''}" onclick="selFreq(${f},this)">${f}×/тижд.</button>`).join('');
+}
+function selDur(d,el){ A.dur=d; G('dg').querySelectorAll('.db').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); }
+function selFreq(f,el){ A.freq=f; G('fg').querySelectorAll('.fb').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); }
+function genTraj(){
+  G('ai-traj').style.display='block';
+  const mode=A.freq<=2?'Аналітичний режим':A.freq<=4?'Режим занурення':'High-Speed режим';
+  callAI(`Динамічний конструктор траєкторій.\nПрофіль: "${A.profile}"\n${A.selProf?`Ціль: ${A.selProf.name} (відповідність ${A.matchPct}%)\n`:''}\nПараметри: ${A.dur} місяців, ${A.freq} зустрічей/тижд. (${mode})\n\nСклади роудмеп по місяцях: завдання, сесії ментора, домашні завдання, результати. Формат: місяць за місяцем. Українська.`,'ai-traj');
+  buildMentor();
+}
+
+// ══════════════════════════════════
+//  AI API
+// ══════════════════════════════════
+async function callAI(prompt, targetId){
+  const el=G(targetId);
+  if(!el) return;
+  el.innerHTML='<div class="al"><div class="ds"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Аналізую...</div>';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const txt=data.content?.map(c=>c.text||'').join('')||'Помилка отримання відповіді.';
+    el.textContent=txt;
+    A.aiTexts[targetId]=txt;
+  } catch(e){
+    el.textContent='Помилка зʼєднання: '+e.message;
+  }
+}
+
+// ══════════════════════════════════
+//  PDF GENERATION  (html2canvas → jsPDF, Cyrillic OK)
+// ══════════════════════════════════
+function makePDFSection(opts){
+  // opts: {title, color, items:[{label, value, type:'bar'|'text'|'gauge'|'list'}], aiText}
+  const W=794,pad=48;
+  const el=document.createElement('div');
+  el.style.cssText=`width:${W}px;font-family:'Manrope',sans-serif;background:#1A0A3D;color:#fff;padding:${pad}px;box-sizing:border-box`;
+
+  // header stripe
+  const hdr=document.createElement('div');
+  hdr.style.cssText=`background:${opts.color};border-radius:10px;padding:14px 20px;margin-bottom:24px`;
+  hdr.innerHTML=`<div style="font-size:11px;font-weight:700;letter-spacing:.15em;color:rgba(0,0,0,.6);margin-bottom:4px">${opts.eyebrow||''}</div><div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.01em">${opts.title}</div>`;
+  el.appendChild(hdr);
+
+  if(opts.subtitle){
+    const s=document.createElement('div');
+    s.style.cssText=`font-size:16px;font-weight:700;color:${opts.color};margin-bottom:8px`;
+    s.textContent=opts.subtitle;
+    el.appendChild(s);
+  }
+  if(opts.desc){
+    const d=document.createElement('div');
+    d.style.cssText='font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px';
+    d.textContent=opts.desc;
+    el.appendChild(d);
+  }
+
+  // BARS
+  if(opts.bars){
+    opts.bars.forEach(([lbl,val,col])=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:12px';
+      row.innerHTML=`
+        <div style="width:160px;font-size:12px;color:rgba(255,255,255,.7);flex-shrink:0">${lbl}</div>
+        <div style="flex:1;height:12px;background:rgba(255,255,255,.1);border-radius:100px;overflow:hidden">
+          <div style="width:${val}%;height:100%;background:${col};border-radius:100px"></div>
+        </div>
+        <div style="width:36px;text-align:right;font-size:13px;font-weight:700;color:${col}">${val}%</div>`;
+      el.appendChild(row);
+    });
+  }
+
+  // RADAR SVG (Big Five)
+  if(opts.radar){
+    const vals=opts.radar;
+    const cx=130,cy=130,R=110;
+    const lbls=['Відкр.','Сумл.','Екстр.','Добр.','Нейр.'];
+    const angs=lbls.map((_,i)=>-Math.PI/2+i*2*Math.PI/5);
+    const pts=angs.map((a,i)=>[cx+Math.cos(a)*R*vals[i],cy+Math.sin(a)*R*vals[i]]);
+    const bgPts=angs.map(a=>[cx+Math.cos(a)*R,cy+Math.sin(a)*R]);
+    const poly=pts.map(p=>p.join(',')).join(' ');
+    const bgPoly=bgPts.map(p=>p.join(',')).join(' ');
+    const gridLines=[.25,.5,.75,1].map(f=>`<circle cx="${cx}" cy="${cy}" r="${R*f}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`).join('');
+    const axisLines=angs.map(a=>`<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*R}" y2="${cy+Math.sin(a)*R}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`).join('');
+    const dots=pts.map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="5" fill="${opts.color}"/>`).join('');
+    const labs=angs.map((a,i)=>{
+      const lx=cx+Math.cos(a)*(R+28), ly=cy+Math.sin(a)*(R+28);
+      return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.6)" font-size="11" font-family="Manrope">${lbls[i]}</text><text x="${cx+Math.cos(a)*(R*vals[i]+16)}" y="${cy+Math.sin(a)*(R*vals[i]+16)}" text-anchor="middle" fill="${opts.color}" font-size="10" font-weight="700" font-family="Manrope">${Math.round(vals[i]*100)}%</text>`;
+    }).join('');
+    const svgWrap=document.createElement('div');
+    svgWrap.style.cssText='display:flex;justify-content:center;margin-bottom:20px';
+    svgWrap.innerHTML=`<svg width="300" height="280" viewBox="-10 0 280 280" xmlns="http://www.w3.org/2000/svg" style="background:rgba(255,255,255,0.03);border-radius:12px">${gridLines}${axisLines}<polygon points="${bgPoly}" fill="rgba(255,255,255,0.03)"/><polygon points="${poly}" fill="${opts.color}33" stroke="${opts.color}" stroke-width="2"/>${dots}${labs}</svg>`;
+    el.appendChild(svgWrap);
+  }
+
+  // GAUGE (profession match)
+  if(opts.gauge!==undefined){
+    const pct=opts.gauge, col=pct>75?'#C8FF00':pct>55?'#00D4A8':'#FF7F50';
+    const cx=200,cy=160,R=120;
+    const startA=Math.PI, endA=Math.PI+pct/100*Math.PI;
+    const x1=cx+Math.cos(startA)*R, y1=cy+Math.sin(startA)*R;
+    const x2=cx+Math.cos(endA)*R, y2=cy+Math.sin(endA)*R;
+    const lf=pct>50?1:0;
+    const bgX1=cx+Math.cos(startA)*R, bgY1=cy+Math.sin(startA)*R;
+    const bgX2=cx+Math.cos(2*Math.PI)*R, bgY2=cy+Math.sin(2*Math.PI)*R;
+    const gEl=document.createElement('div');
+    gEl.style.cssText='display:flex;justify-content:center;margin-bottom:20px';
+    gEl.innerHTML=`<svg width="400" height="220" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+      <path d="M ${cx+Math.cos(Math.PI)*R} ${cy+Math.sin(Math.PI)*R} A ${R} ${R} 0 0 1 ${cx+Math.cos(0)*R} ${cy+Math.sin(0)*R}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20" stroke-linecap="round"/>
+      <path d="M ${x1} ${y1} A ${R} ${R} 0 ${lf} 1 ${x2} ${y2}" fill="none" stroke="${col}" stroke-width="20" stroke-linecap="round"/>
+      <text x="${cx}" y="${cy-10}" text-anchor="middle" fill="${col}" font-size="52" font-weight="900" font-family="Manrope">${pct}%</text>
+      <text x="${cx}" y="${cy+20}" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="13" font-family="Manrope">відповідність</text>
+      <text x="${cx}" y="${cy+44}" text-anchor="middle" fill="#FF7F50" font-size="15" font-weight="700" font-family="Manrope">Gap: ${100-pct}%</text>
+      <text x="30" y="${cy+8}" fill="rgba(255,255,255,0.4)" font-size="12" font-family="Manrope">0%</text>
+      <text x="356" y="${cy+8}" fill="rgba(255,255,255,0.4)" font-size="12" font-family="Manrope">100%</text>
+    </svg>`;
+    el.appendChild(gEl);
+    // cards row
+    const cr=document.createElement('div');
+    cr.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px';
+    cr.innerHTML=`
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center"><div style="font-size:32px;font-weight:900;color:${col}">${pct}%</div><div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px">поточна відповідність</div></div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center"><div style="font-size:32px;font-weight:900;color:#FF7F50">${100-pct}%</div><div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px">gap до 100%</div></div>`;
+    el.appendChild(cr);
+  }
+
+  // 16P dimension bars
+  if(opts.dims){
+    opts.dims.forEach(([lbl,a,b,col,la,lb])=>{
+      const tot=a+b||1, pct=Math.round(a/tot*100);
+      const row=document.createElement('div');
+      row.style.cssText='margin-bottom:14px';
+      row.innerHTML=`
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:12px;color:${col};font-weight:700">${la}</span>
+          <span style="font-size:11px;color:rgba(255,255,255,0.4)">${lbl}</span>
+          <span style="font-size:12px;color:rgba(255,255,255,0.4)">${lb}</span>
+        </div>
+        <div style="height:14px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden;position:relative">
+          <div style="width:${pct}%;height:100%;background:${col};border-radius:100px"></div>
+          <span style="position:absolute;left:${Math.min(pct+2,80)}%;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:#fff">${pct}%</span>
+        </div>`;
+      el.appendChild(row);
+    });
+  }
+
+  // Superpower + blindspot (2-col)
+  if(opts.sp){
+    const spRow=document.createElement('div');
+    spRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px';
+    spRow.innerHTML=`
+      <div style="background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.25);border-radius:12px;padding:14px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:#C8FF00;margin-bottom:6px">СУПЕРСИЛА</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.6">${opts.sp[0]}</div>
+      </div>
+      <div style="background:rgba(255,127,80,0.08);border:1px solid rgba(255,127,80,0.25);border-radius:12px;padding:14px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:#FF7F50;margin-bottom:6px">ЗОНА РОЗВИТКУ</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.6">${opts.sp[1]}</div>
+      </div>`;
+    el.appendChild(spRow);
+  }
+
+  // Timeline (mentor)
+  if(opts.timeline){
+    opts.timeline.forEach(st=>{
+      const it=document.createElement('div');
+      it.style.cssText=`display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px`;
+      it.innerHTML=`
+        <div style="width:36px;height:36px;border-radius:50%;background:${st.col}22;color:${st.col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;border:1.5px solid ${st.col}">${st.n}</div>
+        <div style="flex:1">
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:3px">${st.per} · ${st.sess} сесій</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">${st.title}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">${st.desc}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0"><div style="font-size:18px;font-weight:900;color:${st.col}">${st.freq}</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">/тижд.</div></div>`;
+      el.appendChild(it);
+    });
+  }
+
+  // Map items (career dev)
+  if(opts.mapItems){
+    opts.mapItems.forEach(m=>{
+      const mi=document.createElement('div');
+      mi.style.cssText='display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:8px';
+      mi.innerHTML=`<div style="width:32px;height:32px;border-radius:50%;background:${m.bg};color:${m.col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${m.ico}</div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">${m.title}</div><div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5">${m.desc}</div></div>`;
+      el.appendChild(mi);
+    });
+  }
+
+  // AI text block
+  if(opts.aiText&&opts.aiText.length>10&&!opts.aiText.includes('Аналізую')&&!opts.aiText.includes('Генерую')&&!opts.aiText.includes('Будую')){
+    const aiBlock=document.createElement('div');
+    aiBlock.style.cssText='background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;margin-top:16px';
+    aiBlock.innerHTML=`<div style="font-size:10px;font-weight:700;letter-spacing:.12em;color:${opts.color};margin-bottom:8px">ШІ-АНАЛІЗ</div><div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.75;white-space:pre-wrap">${opts.aiText.slice(0,800)}</div>`;
+    el.appendChild(aiBlock);
+  }
+
+  return el;
+}
+
+async function genPDF(){
+  const btn=G('pdf-btn');
+  btn.disabled=true; btn.textContent='⏳ Генерую PDF...';
+  try{
+    const {jsPDF}=window.jspdf;
+
+    // Gather sections to render
+    const sections=[];
+
+    // ── COVER ──
+    const cover=document.createElement('div');
+    cover.style.cssText='width:794px;min-height:500px;background:#1A0A3D;font-family:Manrope,sans-serif;padding:0;overflow:hidden';
+    cover.innerHTML=`
+      <div style="background:linear-gradient(135deg,#6B21D6,#4C0FB0);padding:52px 48px 40px;position:relative">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.2em;color:#C8FF00;margin-bottom:16px">FUTURE IS NOW · ЛІКО-ШКОЛА · 16.05.2025</div>
+        <div style="font-size:36px;font-weight:900;color:#fff;letter-spacing:-.02em;line-height:1.1;margin-bottom:8px">S.T.R.I.D.E. Pro</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:32px">Персональний психометричний звіт</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          ${[['Профіль',A.profile,'#C8FF00'],['Дата',new Date().toLocaleDateString('uk-UA'),'#00D4A8'],['Ціль',(A.selProf?.name||'—'),'#FF7F50']].map(([l,v,c])=>`
+          <div style="background:rgba(255,255,255,0.1);border-radius:12px;padding:14px">
+            <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;letter-spacing:.1em">${l}</div>
+            <div style="font-size:13px;font-weight:700;color:${c}">${v}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div style="height:5px;background:#C8FF00"></div>
+      <div style="padding:32px 48px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          ${[['🧠','УСВІДОМЛЮЙ','Тест S.T.R.I.D.E. + Big Five + 16P'],['🗺️','ПРОЄКТУЙ','Карта потенціалу та аналіз профілів'],['🚀','ДІЙ','Менторський план та карта розвитку']].map(([ico,t,d])=>`
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px">
+            <div style="font-size:24px;margin-bottom:8px">${ico}</div>
+            <div style="font-size:12px;font-weight:700;color:#C8FF00;margin-bottom:4px;letter-spacing:.05em">${t}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5">${d}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    sections.push(cover);
+
+    // ── STRIDE SECTION ──
+    if(G('cb-s').checked){
+      const sp={
+        'Системний Архітектор':['Інтелектуальна незворушність — раціональні рішення у кризах','Емоційна сліпота — може ігнорувати емоційні сигнали команди'],
+        'Синтетичний Дослідник':['Міждисциплінарний синтез — бачення зв\'язків між системами','Когнітивна інерція — занадто довге обдумування ідеального рішення'],
+        'Глибинний Спеціаліст':['Гранична концентрація — рідкісна глибина знань в галузі','Чутливість до оцінки — критика тимчасово блокує продуктивність'],
+        'Адаптивний Стратег':['Ситуаційна гнучкість — ефективне перемикання між режимами','Розпорошеність — в невизначеності можливий параліч вибору']
+      }[A.profile]||['—','—'];
+      sections.push(makePDFSection({
+        eyebrow:'01 · S.T.R.I.D.E. · АРХІТЕКТУРА МИСЛЕННЯ',
+        title:A.profile,
+        color:'#6B21D6',
+        desc:PDESC[A.profile]||'',
+        bars:[['Когнітивний процесинг',A.s.cog||70,'#C8FF00'],['Енергоефективність',A.s.energy||65,'#00D4A8'],['Адаптивність',A.s.adapt||72,'#FF7F50']],
+        sp,
+        aiText:A.aiTexts['ai-synth']||''
+      }));
+    }
+
+    // ── BIG FIVE ──
+    if(G('cb-b5').checked&&A.tests.includes('b5')){
+      sections.push(makePDFSection({
+        eyebrow:'02 · BIG FIVE (OCEAN) · ОСОБИСТІСНИЙ ВИМІР',
+        title:A.b5type||'Big Five аналіз',
+        color:'#00D4A8',
+        radar:[A.b5.openness/100||.5,A.b5.conscientiousness/100||.5,A.b5.extraversion/100||.5,A.b5.agreeableness/100||.5,A.b5.neuroticism/100||.5],
+        bars:[['Відкритість',A.b5.openness||50,'#C8FF00'],['Сумлінність',A.b5.conscientiousness||50,'#00D4A8'],['Екстраверсія',A.b5.extraversion||50,'#6B21D6'],['Доброзичливість',A.b5.agreeableness||50,'#FF7F50'],['Нейротизм',A.b5.neuroticism||50,'#D4537E']]
+      }));
+    }
+
+    // ── 16P ──
+    if(G('cb-16p').checked&&A.tests.includes('16p')){
+      const TD={'INTJ':'Стратег-Архітектор','INTP':'Логік-Дослідник','ENTJ':'Командир','ENTP':'Полемік','INFJ':'Адвокат','INFP':'Медіатор','ENFJ':'Протагоніст','ENFP':'Активіст','ISTJ':'Адміністратор','ISFJ':'Захисник','ESTJ':'Менеджер','ESFJ':'Консул','ISTP':'Майстер','ISFP':'Авантюрист','ESTP':'Підприємець','ESFP':'Розважальник'};
+      const sc=A.p16scores||{};
+      sections.push(makePDFSection({
+        eyebrow:'03 · 16PERSONALITIES · ТИП ОСОБИСТОСТІ',
+        title:`${A.p16type} · ${TD[A.p16type]||'Унікальний тип'}`,
+        color:'#FF7F50',
+        desc:'Тип визначений на основі 4 дихотомій MBTI: Екстраверсія/Інтроверсія, Інтуїція/Сенсорика, Мислення/Почуття, Судження/Сприйняття.',
+        dims:[
+          ['E/I',sc.E||0,sc.I||0,'#C8FF00','Екстраверсія','Інтроверсія'],
+          ['N/S',sc.N||0,sc.S||0,'#00D4A8','Інтуїція','Сенсорика'],
+          ['T/F',sc.T||0,sc.F||0,'#FF7F50','Мислення','Почуття'],
+          ['J/P',sc.J||0,sc.P||0,'#8B45E8','Судження','Сприйняття'],
+        ]
+      }));
+    }
+
+    // ── PROFESSION ──
+    if(G('cb-p').checked&&A.selProf){
+      sections.push(makePDFSection({
+        eyebrow:'04 · АНАЛІЗ ВІДПОВІДНОСТІ ПРОФЕСІЇ',
+        title:A.selProf.name,
+        color:'#8B45E8',
+        desc:A.selProf.desc,
+        gauge:A.matchPct,
+        mapItems:[
+          {ico:'HS',col:'#C8FF00',bg:'rgba(200,255,0,.12)',title:'Hard Skills',desc:`Технічні компетенції для ${A.selProf.name}`},
+          {ico:'SS',col:'#00D4A8',bg:'rgba(0,212,168,.12)',title:'Systemic Skills',desc:'Когнітивні патерни та способи мислення'},
+          {ico:'EG',col:'#BA7517',bg:'rgba(186,117,23,.12)',title:'Energy Guard',desc:'Захист ресурсу та профілактика вигорання'},
+          {ico:'PF',col:'#D85A30',bg:'rgba(216,90,48,.12)',title:'Portfolio',desc:'Реальні проєкти та докази компетентності'},
+          {ico:'NT',col:'#8B45E8',bg:'rgba(139,69,232,.12)',title:'Network',desc:'Ментори, спільноти, зовнішня верифікація'},
+        ],
+        aiText:A.aiTexts['ai-match']||''
+      }));
+      // карта розвитку окремою сторінкою
+      if(A.aiTexts['ai-map']){
+        sections.push(makePDFSection({
+          eyebrow:'04б · КАРТА САМОРОЗВИТКУ ДО 100%',
+          title:'Персональний план',
+          color:'#C8FF00',
+          aiText:A.aiTexts['ai-map']||''
+        }));
+      }
+    }
+
+    // ── MENTOR ──
+    if(G('cb-m').checked){
+      const d=A.dur, f=A.freq, tot=Math.round(d*4*f);
+      const stages=[];
+      if(d>=1) stages.push({n:'М1',col:'#C8FF00',per:'Місяць 1',title:'Запуск системи',desc:'PKM, контракт розвитку, аналіз bottleneck, перший check-in',sess:Math.round(4*f),freq:f});
+      if(d>=3) stages.push({n:'М3',col:'#00D4A8',per:'Місяці 2–3',title:'Прототипування',desc:'Перший MVP, Learning by Building, дебати з ментором',sess:Math.round(8*f),freq:f});
+      if(d>=6) stages.push({n:'М6',col:'#FF7F50',per:'Місяці 4–6',title:'Масштабування',desc:'Хакатони, конкурси, Feedback Loops, пітч-презентації',sess:Math.round(12*f),freq:f});
+      if(d>=9) stages.push({n:'М9',col:'#8B45E8',per:'Місяці 7–9',title:'Верифікація',desc:'Стажування або публікація результатів, зовнішні партнери',sess:Math.round(12*f),freq:f});
+      if(d>=12) stages.push({n:'М12',col:'#C8FF00',per:'Місяці 10–12',title:'Автономія',desc:`Портфоліо готове, вибір ВНЗ/кар'єри, ${Math.max(1,f-2)} зустр./тижд.`,sess:Math.round(12*f),freq:Math.max(1,f-2)});
+
+      // vision block pre-pending
+      const visEl=document.createElement('div');
+      visEl.style.cssText='background:linear-gradient(135deg,rgba(107,33,214,.3),rgba(0,212,168,.1));border:1px solid rgba(0,212,168,.3);border-radius:16px;padding:20px;margin-bottom:20px;width:794px;font-family:Manrope,sans-serif;box-sizing:border-box;padding:20px 48px';
+      const vt=A.aiTexts['vis-b']||'';
+      visEl.innerHTML=`<div style="font-size:10px;font-weight:700;letter-spacing:.18em;color:#00D4A8;margin-bottom:8px">ВІЗІЯ 2030+</div><div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:10px">${A.dur} міс. · ${A.freq}×/тижд. · ${tot} сесій загалом</div><div style="font-size:13px;color:rgba(255,255,255,0.65);line-height:1.75">${vt&&!vt.includes('Генерую')?vt.slice(0,500):'Візія формується після натискання «Згенерувати траєкторію» у розділі Візія.'}</div>`;
+
+      const mentorSection=makePDFSection({
+        eyebrow:'05 · МЕНТОРСЬКИЙ РОУДМЕП · ДІЙ',
+        title:`${d} міс. · ${f}×/тижд. · ${tot} сесій`,
+        color:'#C8FF00',
+        timeline:stages,
+        aiText:A.aiTexts['ai-traj']||''
+      });
+      // prepend vision
+      mentorSection.insertBefore(visEl, mentorSection.children[1]);
+      sections.push(mentorSection);
+    }
+
+    // ── RENDER EACH SECTION TO CANVAS → PDF ──
+    const doc=new jsPDF({orientation:'portrait',unit:'px',format:'a4',hotfixes:['px_scaling']});
+    const pageW=794, pageH=1123;
+    doc.deletePage(1); // start fresh
+
+    // Temporarily attach to DOM for html2canvas
+    const host=document.createElement('div');
+    host.style.cssText='position:fixed;left:-9999px;top:0;z-index:-1';
+    document.body.appendChild(host);
+
+    for(let si=0;si<sections.length;si++){
+      btn.textContent=`⏳ Рендерю ${si+1}/${sections.length}...`;
+      const sec=sections[si];
+      host.innerHTML=''; host.appendChild(sec);
+      await new Promise(r=>setTimeout(r,80)); // allow layout
+
+      const canvas=await html2canvas(sec,{
+        scale:1.5,
+        useCORS:true,
+        backgroundColor:'#1A0A3D',
+        width:pageW,
+        logging:false
+      });
+
+      // split tall canvas into multiple PDF pages
+      const imgH=canvas.height/1.5;
+      const ratio=pageW/canvas.width;
+      const scaledH=canvas.height*ratio;
+      const pdfPageH=pageH;
+
+      if(scaledH<=pdfPageH){
+        doc.addPage([pageW,pageH],'p');
+        doc.addImage(canvas.toDataURL('image/jpeg',0.88),'JPEG',0,0,pageW,scaledH);
+      } else {
+        // multi-page: slice canvas
+        const sliceH=Math.floor(pdfPageH/(ratio));
+        let srcY=0;
+        while(srcY<canvas.height){
+          const remaining=canvas.height-srcY;
+          const thisSlice=Math.min(sliceH,remaining);
+          const sliceCanvas=document.createElement('canvas');
+          sliceCanvas.width=canvas.width; sliceCanvas.height=thisSlice;
+          sliceCanvas.getContext('2d').drawImage(canvas,0,-srcY);
+          doc.addPage([pageW,pageH],'p');
+          const slicedH=thisSlice*ratio;
+          doc.addImage(sliceCanvas.toDataURL('image/jpeg',0.88),'JPEG',0,0,pageW,slicedH);
+          srcY+=thisSlice;
+        }
+      }
+    }
+
+    document.body.removeChild(host);
+
+    // Footer on all pages
+    const totalPages=doc.internal.getNumberOfPages();
+    for(let i=1;i<=totalPages;i++){
+      doc.setPage(i);
+      doc.setFillColor(26,10,61); doc.rect(0,pageH-24,pageW,24,'F');
+      doc.setFillColor(200,255,0); doc.rect(0,pageH-26,pageW,2,'F');
+      doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(150,150,150);
+      doc.text(`Future is NOW · S.T.R.I.D.E. Pro · ${i}/${totalPages}`,24,pageH-9);
+      doc.text('futureisnow@liko-school.kyiv.ua',pageW-24,pageH-9,{align:'right'});
+    }
+
+    doc.save('future-is-now-stride-report.pdf');
+    btn.textContent='✅ PDF завантажено!';
+    setTimeout(()=>{ btn.disabled=false; btn.textContent='⬇ Згенерувати та завантажити PDF'; },3000);
+  } catch(err){
+    console.error(err);
+    btn.disabled=false; btn.textContent='❌ Помилка: '+err.message;
+  }
+}
+
+// ══════════════════════════════════
+//  RESET
+// ══════════════════════════════════
+function resetAll(){
+  Object.assign(A,{tests:['stride'],s:{},b5:{},p16:{},p16scores:{},profile:'',b5type:'',p16type:'',selProf:null,profTests:['stride'],matchPct:0,dur:3,freq:2,aiTexts:{}});
+  sQ=0; b5Q=0; p16Q=0; Object.keys(p16Sc).forEach(k=>p16Sc[k]=0);
+  profAnalysisTests=['stride']; selCat='Всі';
+  ['t-stride','t-b5','t-16p'].forEach(id=>{const el=G(id);if(el){el.classList.remove('sel');if(id==='t-stride')el.classList.add('sel');}});
+}
+
+// init
+goTo('intro');
+</script>
+</body>
+</html>

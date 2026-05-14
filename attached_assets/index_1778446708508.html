@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>S.T.R.I.D.E. — Платформа діагностики потенціалу</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --acc:#534AB7;--acc-l:#EEEDFE;--acc-m:#7F77DD;--acc-d:#3C3489;
+  --teal:#1D9E75;--tl:#E1F5EE;--td:#085041;
+  --coral:#D85A30;--cl:#FAECE7;--cd:#712B13;
+  --amb:#BA7517;--al:#FAEEDA;
+  --grn:#639922;--gl:#EAF3DE;
+  --pink:#D4537E;
+  --bg:var(--color-background-primary);
+  --bg2:var(--color-background-secondary);
+  --bg3:var(--color-background-tertiary);
+  --txt:var(--color-text-primary);
+  --muted:var(--color-text-secondary);
+  --bdr:var(--color-border-tertiary);
+  --bdr2:var(--color-border-secondary);
+  --fn:'Syne',sans-serif;
+  --fb:'Manrope',sans-serif;
+  --fm:'DM Mono',monospace;
+  --r:10px;--rl:16px
+}
+html,body{font-family:var(--fb);color:var(--txt);background:var(--bg);min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:.5px solid var(--bdr);position:sticky;top:0;background:var(--bg);z-index:100;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-ico{width:38px;height:38px;background:var(--acc);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-ico svg{width:19px;height:19px}
+.logo-name{font-family:var(--fn);font-size:17px;font-weight:800;letter-spacing:-.3px}
+.logo-sub{font-size:10px;color:var(--muted);font-family:var(--fm);letter-spacing:.06em}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.user-chip{display:flex;align-items:center;gap:8px;padding:6px 12px;border:.5px solid var(--bdr);border-radius:100px;font-size:13px;cursor:pointer;transition:all .2s}
+.user-chip:hover{border-color:var(--acc-m)}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--acc-l);display:flex;align-items:center;justify-content:center;font-family:var(--fn);font-size:11px;font-weight:700;color:var(--acc)}
+.step-dots{display:flex;gap:5px;align-items:center}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--bg3);border:.5px solid var(--bdr2);transition:all .3s}
+.sdot.active{background:var(--acc);border-color:var(--acc);transform:scale(1.3)}
+.sdot.done{background:var(--teal);border-color:var(--teal)}
+.step-lbl{font-family:var(--fm);font-size:11px;color:var(--muted)}
+
+/* ── WRAP ── */
+.wrap{max-width:780px;margin:0 auto;padding:0 20px 60px}
+
+/* ── SCREENS ── */
+.scr{display:none;padding-top:28px;animation:fi .35s ease}
+.scr.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TYPOGRAPHY ── */
+.eyebrow{font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.h1{font-family:var(--fn);font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.1;letter-spacing:-.5px;margin-bottom:12px}
+.h1 em{color:var(--acc);font-style:normal}
+.h2{font-family:var(--fn);font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:12px}
+.lead{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);padding:18px}
+.card2{background:var(--bg);border:.5px solid var(--bdr2);border-radius:var(--r);padding:14px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+
+/* ── PROGRESS ── */
+.pb{height:3px;background:var(--bg3);border-radius:100px;margin-bottom:18px;overflow:hidden}
+.pb .f{height:100%;background:var(--acc);border-radius:100px;transition:width .5s ease}
+
+/* ── VECTORS GRID ── */
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.vcard{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);padding:14px}
+.vcard-num{font-family:var(--fm);font-size:9px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+.vcard-ico{font-size:20px;margin-bottom:6px}
+.vcard-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.vcard-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── BLOCK HEADER ── */
+.blk-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:.5px solid var(--bdr)}
+.blk-ico{width:44px;height:44px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.blk-ico.p{background:var(--acc-l)}.blk-ico.t{background:var(--tl)}.blk-ico.c{background:var(--cl)}
+.blk-meta{font-family:var(--fm);font-size:10px;color:var(--muted);margin-bottom:3px}
+.blk-title{font-family:var(--fn);font-size:20px;font-weight:800}
+.blk-title.p{color:var(--acc)}.blk-title.t{color:var(--teal)}.blk-title.c{color:var(--coral)}
+
+/* ── QUESTIONS ── */
+.q-wrap{margin-bottom:20px}
+.q-n{font-family:var(--fm);font-size:10px;color:var(--muted);margin-bottom:8px}
+.q-txt{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:10px}
+.q-ctx{font-size:12px;color:var(--muted);font-style:italic;padding:9px 12px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--bdr2);margin-bottom:12px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;background:var(--bg);border:.5px solid var(--bdr2);border-radius:var(--r);padding:12px 14px;cursor:pointer;font-size:13px;color:var(--txt);line-height:1.5;text-align:left;transition:all .2s;font-family:var(--fb);width:100%}
+.opt:hover{border-color:var(--acc-m);background:var(--acc-l)}
+.opt.sel{border-color:var(--acc);background:var(--acc-l);border-width:1.5px}
+.ol{font-family:var(--fm);font-size:9px;color:var(--muted);flex-shrink:0;margin-top:2px;width:13px}
+.opt.sel .ol{color:var(--acc)}
+.sc-row{display:flex;align-items:center;gap:10px;margin:10px 0 4px}
+.sc-l{font-size:11px;color:var(--muted);white-space:nowrap}
+.sc-v{font-family:var(--fn);font-size:20px;font-weight:800;color:var(--acc);min-width:22px;text-align:center}
+input[type=range]{flex:1;accent-color:var(--acc)}
+.sc-d{font-size:11px;color:var(--muted);text-align:center;margin-top:4px}
+
+/* ── BUTTONS ── */
+.bp{display:inline-flex;align-items:center;gap:7px;background:var(--acc);color:#fff;border:none;border-radius:var(--r);padding:11px 22px;font-size:13px;font-weight:600;font-family:var(--fn);cursor:pointer;transition:all .2s}
+.bp:hover{opacity:.88;transform:translateY(-1px)}
+.bp:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.bs{display:inline-flex;align-items:center;gap:7px;background:var(--bg2);color:var(--muted);border:.5px solid var(--bdr);border-radius:var(--r);padding:10px 20px;font-size:13px;font-family:var(--fn);cursor:pointer;transition:all .2s}
+.bs:hover{border-color:var(--bdr2);color:var(--txt)}
+.bg_{background:none;border:none;color:var(--muted);font-size:13px;font-family:var(--fb);cursor:pointer;padding:7px;transition:color .2s}
+.bg_:hover{color:var(--txt)}
+.brow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:.5px solid var(--bdr)}
+
+/* ── RESULT CARDS ── */
+.res-header{text-align:center;padding:16px 0 20px}
+.res-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);background:var(--tl);padding:4px 11px;border-radius:100px;margin-bottom:10px}
+.res-name{font-family:var(--fn);font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
+.res-tagline{font-size:13px;color:var(--muted);line-height:1.6;max-width:420px;margin:0 auto}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.rc{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);padding:14px}
+.rc.full{grid-column:1/-1}
+.rc-lbl{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.rc-title{font-size:14px;font-weight:600;margin-bottom:5px}
+.rc-body{font-size:12px;color:var(--muted);line-height:1.6}
+.dim-bars{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.dim-row{display:flex;align-items:center;gap:9px}
+.dim-name{font-size:11px;color:var(--txt);width:100px;flex-shrink:0}
+.dim-track{flex:1;height:6px;background:var(--bg3);border-radius:100px;overflow:hidden}
+.dim-fill{height:100%;border-radius:100px}
+.dim-val{font-family:var(--fm);font-size:10px;color:var(--muted);width:26px;text-align:right}
+.scenarios{display:flex;flex-direction:column;gap:7px}
+.scenario{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--r);border:.5px solid var(--bdr)}
+.sc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sc-name{font-size:12px;font-weight:500}
+.sc-fit{font-size:10px;color:var(--muted);font-family:var(--fm);margin-left:auto}
+.warns{display:flex;flex-direction:column;gap:7px}
+.warn-item{display:flex;gap:9px;align-items:flex-start;padding:9px 12px;border-radius:var(--r);background:var(--al);border:.5px solid #FAC775}
+.warn-ico{font-size:13px;flex-shrink:0;margin-top:1px}
+.warn-txt{font-size:12px;color:#633806;line-height:1.5}
+
+/* ── ROADMAP ── */
+.rmap-section{margin-bottom:20px}
+.rmap-section-title{font-family:var(--fn);font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.rmap-section-title .badge{font-size:10px;font-family:var(--fm);padding:2px 8px;border-radius:100px;background:var(--acc-l);color:var(--acc)}
+.dur-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.dur-btn{font-size:11px;font-family:var(--fm);padding:5px 12px;border-radius:100px;border:.5px solid var(--bdr);background:var(--bg2);cursor:pointer;color:var(--muted);transition:all .2s}
+.dur-btn:hover{border-color:var(--acc-m)}
+.dur-btn.sel{border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
+.freq-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.freq-btn{font-size:11px;font-family:var(--fm);padding:5px 11px;border-radius:100px;border:.5px solid var(--bdr);background:var(--bg2);cursor:pointer;color:var(--muted);transition:all .2s}
+.freq-btn:hover{border-color:var(--acc-m)}
+.freq-btn.sel{border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
+.timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:30px;margin-bottom:16px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:1px;background:var(--bdr)}
+.tl-item{position:relative;padding-bottom:14px}
+.tl-dot{position:absolute;left:-26px;top:2px;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:7px;font-weight:600;z-index:1;border:1px solid}
+.tl-card{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--r);padding:11px 13px}
+.tl-period{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.tl-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.tl-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.tl-pills{display:flex;flex-wrap:wrap;gap:4px}
+.tl-pill{font-size:9px;font-family:var(--fm);padding:2px 7px;border-radius:100px;border:.5px solid var(--bdr2);background:var(--bg3);color:var(--muted)}
+
+/* ── PROF SELECTOR ── */
+.prof-search{position:relative;margin-bottom:10px}
+.prof-search input{width:100%;padding:9px 13px 9px 33px;font-size:13px;border:.5px solid var(--bdr);border-radius:var(--r);background:var(--bg2);color:var(--txt);font-family:var(--fb)}
+.prof-search input::placeholder{color:var(--muted)}
+.prof-search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.cats{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.cat-btn{font-size:10px;font-family:var(--fm);padding:3px 10px;border-radius:100px;border:.5px solid var(--bdr);background:var(--bg2);cursor:pointer;color:var(--muted);transition:all .2s}
+.cat-btn.on{background:var(--acc-l);border-color:var(--acc-m);color:var(--acc)}
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:14px}
+.pi{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--r);padding:11px;cursor:pointer;transition:all .2s}
+.pi:hover{border-color:var(--acc-m)}
+.pi.sel{border-color:var(--acc);background:var(--acc-l);border-width:1.5px}
+.pi-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.pi-cat{font-size:9px;font-family:var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pi-desc{font-size:11px;color:var(--muted);margin-top:3px}
+.match-gauge{text-align:center;padding:16px 0 12px}
+.mg-num{font-family:var(--fn);font-size:48px;font-weight:800;line-height:1}
+.mg-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.mg-bar{height:7px;background:var(--bg3);border-radius:100px;overflow:hidden;margin:10px 0}
+.mg-f{height:100%;border-radius:100px;transition:width 1s ease}
+
+/* ── AUTH ── */
+.auth-box{max-width:400px;margin:40px auto;background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);padding:28px}
+.auth-title{font-family:var(--fn);font-size:20px;font-weight:800;margin-bottom:6px}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:500;margin-bottom:5px}
+.form-input{width:100%;padding:9px 12px;font-size:14px;border:.5px solid var(--bdr);border-radius:var(--r);background:var(--bg);color:var(--txt);font-family:var(--fb);transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--acc)}
+.form-error{font-size:12px;color:var(--coral);margin-top:4px}
+
+/* ── PROFILE PAGE ── */
+.profile-hero{display:flex;align-items:center;gap:18px;padding:20px;background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);margin-bottom:20px}
+.ph-avatar{width:60px;height:60px;border-radius:50%;background:var(--acc-l);display:flex;align-items:center;justify-content:center;font-family:var(--fn);font-size:22px;font-weight:800;color:var(--acc);flex-shrink:0}
+.ph-name{font-family:var(--fn);font-size:20px;font-weight:800;margin-bottom:2px}
+.ph-meta{font-size:12px;color:var(--muted)}
+.history-list{display:flex;flex-direction:column;gap:8px}
+.history-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--r);cursor:pointer;transition:all .2s}
+.history-item:hover{border-color:var(--acc-m)}
+.hi-badge{font-size:10px;font-family:var(--fm);padding:3px 9px;border-radius:100px;background:var(--acc-l);color:var(--acc)}
+.hi-name{font-size:13px;font-weight:600;flex:1}
+.hi-date{font-size:11px;color:var(--muted);font-family:var(--fm)}
+.hi-caret{color:var(--muted)}
+
+/* ── ADMIN PANEL ── */
+.admin-tabs{display:flex;gap:4px;border-bottom:.5px solid var(--bdr);margin-bottom:20px}
+.atab{background:none;border:none;padding:9px 14px;font-size:12px;font-family:var(--fn);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-.5px;transition:all .2s}
+.atab:hover{color:var(--txt)}
+.atab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.atp{display:none}.atp.on{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat-card{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--r);padding:14px;text-align:center}
+.stat-num{font-family:var(--fn);font-size:28px;font-weight:800;color:var(--acc);margin-bottom:2px}
+.stat-lbl{font-size:11px;color:var(--muted)}
+.compare-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.compare-card{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .2s}
+.compare-card.sel{border-color:var(--acc);background:var(--acc-l)}
+.compare-card:hover{border-color:var(--acc-m)}
+.cc-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.cc-prof{font-size:11px;color:var(--acc);font-family:var(--fm)}
+.cc-date{font-size:10px;color:var(--muted)}
+.compare-result{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--rl);padding:18px;margin-top:14px}
+.compare-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cr-label{font-size:12px;color:var(--muted);width:120px;flex-shrink:0}
+.cr-bars{flex:1;display:flex;flex-direction:column;gap:4px}
+.cr-bar-row{display:flex;align-items:center;gap:6px}
+.cr-bar{flex:1;height:7px;background:var(--bg3);border-radius:100px;overflow:hidden}
+.cr-bar-f{height:100%;border-radius:100px}
+.cr-name{font-size:9px;font-family:var(--fm);width:36px;text-align:right;color:var(--muted);flex-shrink:0}
+.users-table{width:100%;border-collapse:collapse}
+.users-table th{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 10px;text-align:left;border-bottom:.5px solid var(--bdr)}
+.users-table td{padding:9px 10px;font-size:12px;border-bottom:.5px solid var(--bdr2);vertical-align:middle}
+.users-table tr:hover td{background:var(--bg2)}
+.tbl-badge{font-size:10px;font-family:var(--fm);padding:2px 8px;border-radius:100px;background:var(--acc-l);color:var(--acc)}
+.tbl-action{font-size:11px;color:var(--acc);cursor:pointer;background:none;border:none;font-family:var(--fb);text-decoration:underline}
+
+/* ── TABS ── */
+.tnav{display:flex;gap:3px;border-bottom:.5px solid var(--bdr);margin-bottom:16px}
+.tab{background:none;border:none;padding:8px 13px;font-size:12px;font-family:var(--fn);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-.5px;transition:all .2s}
+.tab:hover{color:var(--txt)}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.tp{display:none}.tp.on{display:block}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--txt);color:var(--bg);padding:10px 18px;border-radius:var(--r);font-size:13px;font-weight:500;z-index:1000;transform:translateY(60px);opacity:0;transition:all .3s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ── AI OUT ── */
+.ao{background:var(--bg2);border:.5px solid var(--bdr);border-radius:var(--r);padding:14px;font-size:13px;line-height:1.8;color:var(--muted);min-height:60px;white-space:pre-wrap}
+.al{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+.dots{display:flex;gap:3px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:bk 1.2s ease infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bk{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* ── SEPARATOR ── */
+.sep{border:none;border-top:.5px solid var(--bdr);margin:18px 0}
+.tag{display:inline-block;font-size:10px;font-family:var(--fm);padding:2px 8px;border-radius:100px;border:.5px solid var(--bdr2);color:var(--muted);margin-right:4px;margin-bottom:4px}
+
+@media(max-width:560px){.vgrid,.rgrid,.stat-grid,.compare-grid,.pg{grid-template-columns:1fr}.step-dots,.step-lbl{display:none}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-ico">
+      <svg viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 6.5v6L9.5 17l6.5-4.5v-6L9.5 2z" stroke="white" stroke-width="1.4"/><circle cx="9.5" cy="9.5" r="2.5" fill="white" opacity=".8"/></svg>
+    </div>
+    <div>
+      <div class="logo-name">S.T.R.I.D.E.</div>
+      <div class="logo-sub">Systemic Talent & Resource Integration</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="step-dots" id="stepDots">
+      <div class="sdot active" id="sd0"></div>
+      <div class="sdot" id="sd1"></div>
+      <div class="sdot" id="sd2"></div>
+      <div class="sdot" id="sd3"></div>
+      <div class="sdot" id="sd4"></div>
+    </div>
+    <div class="step-lbl" id="stepLbl">Вступ</div>
+    <div class="user-chip" id="userChip" onclick="goUserArea()">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <span id="userLabel">Увійти</span>
+    </div>
+    <button class="bs" id="adminBtn" style="display:none" onclick="goTo('admin')">⚙ Адмін</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══ INTRO ══ -->
+<div class="scr on" id="scr-intro">
+  <div style="text-align:center;padding:20px 0 30px">
+    <div style="display:inline-flex;align-items:center;gap:7px;font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);background:var(--acc-l);padding:5px 13px;border-radius:100px;margin-bottom:16px">Методика діагностики потенціалу</div>
+    <div class="h1" style="text-align:center">Твоя<br><em>Карта Потенціалу</em></div>
+    <div class="lead" style="text-align:center;max-width:440px;margin:0 auto 24px">Три вектори, які розкриють архітектуру твого мислення та побудують персональний шлях до самореалізації.</div>
+    <div class="vgrid" style="text-align:left">
+      <div class="vcard"><div class="vcard-num">Вектор 01</div><div class="vcard-ico">🧠</div><div class="vcard-name">Когнітивний процесинг</div><div class="vcard-desc">Як твій мозок обробляє та аналізує інформацію</div></div>
+      <div class="vcard"><div class="vcard-num">Вектор 02</div><div class="vcard-ico">⚡</div><div class="vcard-name">Енергозатрати</div><div class="vcard-desc">Що дає силу та що виснажує твою систему</div></div>
+      <div class="vcard"><div class="vcard-num">Вектор 03</div><div class="vcard-ico">🛡️</div><div class="vcard-name">Адаптивність</div><div class="vcard-desc">Як ти взаємодієш з невідомістю та критикою</div></div>
+    </div>
+    <button class="bp" style="font-size:15px;padding:13px 30px" onclick="startTest()">Розпочати діагностику →</button>
+  </div>
+</div>
+
+<!-- ══ AUTH ══ -->
+<div class="scr" id="scr-auth">
+  <div class="auth-box">
+    <div class="auth-title" id="auth-title">Увійти в профіль</div>
+    <div class="auth-sub" id="auth-sub">Збережи свої результати та відстежуй прогрес</div>
+    <div id="auth-reg-fields" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Ім'я</label>
+        <input class="form-input" id="auth-name" placeholder="Твоє ім'я">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Вік</label>
+        <input class="form-input" id="auth-age" type="number" placeholder="16" min="10" max="99">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="auth-email" type="email" placeholder="email@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Пароль</label>
+      <input class="form-input" id="auth-pass" type="password" placeholder="••••••">
+    </div>
+    <div class="form-error" id="auth-error" style="display:none"></div>
+    <div class="brow">
+      <button class="bp" id="auth-submit" onclick="authSubmit()">Увійти →</button>
+      <button class="bg_" id="auth-toggle" onclick="toggleAuth()">Немає акаунту? Зареєструватись</button>
+    </div>
+    <div class="sep"></div>
+    <button class="bs" style="width:100%;justify-content:center" onclick="continueGuest()">Продовжити як гість (без збереження)</button>
+  </div>
+</div>
+
+<!-- ══ BLOCK 1 ══ -->
+<div class="scr" id="scr-b1">
+  <div class="pb mb16"><div class="f" id="pb1" style="width:0%"></div></div>
+  <div class="blk-head">
+    <div class="blk-ico p">🧠</div>
+    <div><div class="blk-meta">Вектор 01 / Когнітивний процесинг</div><div class="blk-title p">Архітектура мислення</div></div>
+  </div>
+  <div id="b1q-wrap"></div>
+  <div class="nav">
+    <button class="bg_" id="b1back" onclick="b1Back()">← Назад</button>
+    <button class="bp" id="b1next" disabled onclick="b1Next()">Далі →</button>
+  </div>
+</div>
+
+<!-- ══ BLOCK 2 ══ -->
+<div class="scr" id="scr-b2">
+  <div class="pb mb16"><div class="f" id="pb2" style="width:0%"></div></div>
+  <div class="blk-head">
+    <div class="blk-ico t">⚡</div>
+    <div><div class="blk-meta">Вектор 02 / Енергозатрати</div><div class="blk-title t">Паливна карта</div></div>
+  </div>
+  <div id="b2q-wrap"></div>
+  <div class="nav">
+    <button class="bg_" onclick="goTo('b1');b1Q=2;renderB1Q()">← Назад</button>
+    <button class="bp" id="b2next" disabled onclick="b2Next()">Далі →</button>
+  </div>
+</div>
+
+<!-- ══ BLOCK 3 ══ -->
+<div class="scr" id="scr-b3">
+  <div class="pb mb16"><div class="f" id="pb3" style="width:0%"></div></div>
+  <div class="blk-head">
+    <div class="blk-ico c">🛡️</div>
+    <div><div class="blk-meta">Вектор 03 / Адаптивність</div><div class="blk-title c">Двигун стійкості</div></div>
+  </div>
+  <div id="b3q-wrap"></div>
+  <div class="nav">
+    <button class="bg_" onclick="goTo('b2');b2Q=2;renderB2Q()">← Назад</button>
+    <button class="bp" id="b3next" disabled onclick="calcResult()">Отримати результат →</button>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="scr" id="scr-result">
+  <div class="res-header">
+    <div class="res-badge">Карта Потенціалу · S.T.R.I.D.E.</div>
+    <div class="res-name" id="r-name"></div>
+    <div class="res-tagline" id="r-tagline"></div>
+  </div>
+
+  <div class="tnav">
+    <button class="tab on" onclick="rtab(this,'rt-main')">Профіль</button>
+    <button class="tab" onclick="rtab(this,'rt-trajectory')">Траєкторія</button>
+    <button class="tab" onclick="rtab(this,'rt-roadmap')">Карта розвитку</button>
+    <button class="tab" onclick="rtab(this,'rt-prof')">Професія (опціонально)</button>
+  </div>
+
+  <!-- TAB: MAIN PROFILE -->
+  <div class="tp on" id="rt-main">
+    <div class="rgrid" id="r-grid-main"></div>
+    <div class="card mb12" id="r-card-dims"></div>
+    <div class="card mb12" id="r-card-scenarios"></div>
+    <div class="card" id="r-card-warnings"></div>
+  </div>
+
+  <!-- TAB: TRAJECTORY -->
+  <div class="tp" id="rt-trajectory">
+    <div class="rgrid" id="r-grid-traj"></div>
+    <div class="card mb16" id="r-card-traj-detail"></div>
+
+    <!-- Operating Map: 2–3 years -->
+    <div class="card mb16">
+      <div class="rc-lbl">Операційна карта розвитку · 2–3 роки</div>
+      <div id="r-op-map"></div>
+    </div>
+
+    <!-- Learning Path -->
+    <div class="card mb16">
+      <div class="rc-lbl">Шлях навчання</div>
+      <div id="r-learning-path"></div>
+    </div>
+
+    <!-- Future Realization -->
+    <div class="card" style="background:linear-gradient(135deg,var(--acc-l),var(--tl))">
+      <div class="rc-lbl">Перспективи самореалізації 2030+</div>
+      <div id="r-future"></div>
+    </div>
+  </div>
+
+  <!-- TAB: ROADMAP WITH MENTOR -->
+  <div class="tp" id="rt-roadmap">
+    <div class="card mb16">
+      <div class="rc-lbl mb12">Ця карта розвитку — незалежна від вибору професії</div>
+      <p class="rc-body mb16">Базується на твоєму когнітивному профілі, енерготипі та рівні адаптивності. Обери бажаний термін та інтенсивність роботи з ментором.</p>
+
+      <div class="rmap-section">
+        <div class="rmap-section-title">Термін роботи з ментором <span class="badge" id="dur-badge">3 місяці</span></div>
+        <div class="dur-grid" id="dur-grid"></div>
+      </div>
+
+      <div class="rmap-section">
+        <div class="rmap-section-title">Частота зустрічей <span class="badge" id="freq-badge">2×/тижд.</span></div>
+        <div class="freq-grid" id="freq-grid"></div>
+      </div>
+
+      <button class="bp mb16" onclick="buildRoadmap()">Побудувати карту →</button>
+    </div>
+
+    <div id="roadmap-output" style="display:none">
+      <!-- Vision -->
+      <div class="card mb12" style="border-color:var(--acc);border-width:1.5px">
+        <div class="rc-lbl">Візія · Образ тебе через <span id="vis-dur">3 місяці</span></div>
+        <div class="rc-title" id="vis-title"></div>
+        <div class="rc-body" id="vis-body"></div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="card mb12">
+        <div class="rc-lbl">Дорожня карта · Спринти</div>
+        <div class="timeline" id="rm-timeline"></div>
+      </div>
+
+      <!-- Hard/Soft/Energy -->
+      <div class="rgrid mb12" id="rm-layers"></div>
+
+      <!-- Mentor format -->
+      <div class="card" style="background:var(--tl);border-color:var(--teal)">
+        <div class="rc-lbl">Формат менторської сесії · 45–60 хв</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">
+          <div style="text-align:center"><div style="font-family:var(--fn);font-size:18px;font-weight:800;color:var(--teal)">5′</div><div style="font-size:11px;color:var(--muted)">Ретроспектива</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fn);font-size:18px;font-weight:800;color:var(--teal)">20′</div><div style="font-size:11px;color:var(--muted)">Інтел. штурм</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fn);font-size:18px;font-weight:800;color:var(--teal)">15′</div><div style="font-size:11px;color:var(--muted)">Стратег. план</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fn);font-size:18px;font-weight:800;color:var(--teal)">5′</div><div style="font-size:11px;color:var(--muted)">Енерго-чек</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: PROFESSION (optional) -->
+  <div class="tp" id="rt-prof">
+    <div class="card mb16">
+      <div class="rc-lbl mb8">Додаткова опція — аналіз відповідності професії</div>
+      <p class="rc-body mb14">Вибір професії не обов'язковий. Основна карта розвитку вже побудована на вкладці «Карта розвитку». Тут можна додатково перевірити відповідність твого профілю конкретній ролі.</p>
+
+      <div class="prof-search mb8"><span class="prof-search-ico">⌕</span><input type="text" id="ps-input" placeholder="Пошук професії..." oninput="filterProfs()"></div>
+      <div class="cats" id="cats-wrap"></div>
+      <div class="pg" id="profs-grid"></div>
+
+      <div id="prof-match-out" style="display:none">
+        <div class="match-gauge">
+          <div class="mg-num" id="mg-num">—</div>
+          <div class="mg-lbl" id="mg-lbl">відповідність</div>
+          <div class="mg-bar"><div class="mg-f" id="mg-fill" style="width:0%"></div></div>
+        </div>
+        <div class="card2 mb12">
+          <div class="rc-lbl mb8">Сильні сторони для цієї ролі</div>
+          <div id="prof-strengths"></div>
+        </div>
+        <div class="card2 mb12">
+          <div class="rc-lbl mb8">Що розвивати</div>
+          <div id="prof-gaps"></div>
+        </div>
+        <div class="card2">
+          <div class="rc-lbl mb8">Хардові навички для старту</div>
+          <div id="prof-skills"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <button class="bp" id="save-btn" onclick="saveResult()">💾 Зберегти в профіль</button>
+    <button class="bs" onclick="goTo('intro');resetAll()">↺ Пройти знову</button>
+  </div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div class="scr" id="scr-profile">
+  <div class="profile-hero mb20">
+    <div class="ph-avatar" id="ph-avatar">?</div>
+    <div>
+      <div class="ph-name" id="ph-name">—</div>
+      <div class="ph-meta" id="ph-meta">—</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="bs" onclick="goTo('intro')">← Пройти тест</button>
+      <button class="bg_" onclick="logout()">Вийти</button>
+    </div>
+  </div>
+
+  <div class="h2 mb16">Мої результати</div>
+  <div class="history-list" id="history-list">
+    <div class="card" style="text-align:center;color:var(--muted)">Результатів ще немає. Пройди тест!</div>
+  </div>
+</div>
+
+<!-- ══ SAVED RESULT VIEW ══ -->
+<div class="scr" id="scr-saved-view">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="bg_" onclick="goTo('profile')">← Назад до профілю</button>
+    <div class="rc-lbl" style="margin-bottom:0" id="sv-date"></div>
+  </div>
+  <div id="sv-content"></div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div class="scr" id="scr-admin">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <button class="bg_" onclick="goTo('intro')">← Назад</button>
+    <div class="h2" style="margin-bottom:0">⚙ Адмін-панель</div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="atab on" onclick="atab(this,'at-stats')">Статистика</button>
+    <button class="atab" onclick="atab(this,'at-users')">Профілі</button>
+    <button class="atab" onclick="atab(this,'at-compare')">Порівняння</button>
+    <button class="atab" onclick="atab(this,'at-export')">Експорт</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="atp on" id="at-stats">
+    <div class="stat-grid mb20" id="admin-stats"></div>
+    <div class="card mb16">
+      <div class="rc-lbl mb12">Розподіл профілів</div>
+      <div id="admin-profiles-chart"></div>
+    </div>
+    <div class="card">
+      <div class="rc-lbl mb12">Останні проходження</div>
+      <div id="admin-recent"></div>
+    </div>
+  </div>
+
+  <!-- Users -->
+  <div class="atp" id="at-users">
+    <div class="card mb12" style="padding:10px 14px;display:flex;gap:8px;align-items:center">
+      <span class="prof-search-ico">⌕</span>
+      <input style="border:none;background:none;color:var(--txt);font-size:13px;flex:1;font-family:var(--fb)" id="admin-user-search" placeholder="Пошук за ім'ям або email..." oninput="renderAdminUsers()">
+    </div>
+    <div style="overflow-x:auto">
+      <table class="users-table" id="admin-users-table">
+        <thead><tr><th>Ім'я</th><th>Email</th><th>Вік</th><th>Профіль</th><th>Тестів</th><th>Дата</th><th></th></tr></thead>
+        <tbody id="admin-users-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Compare -->
+  <div class="atp" id="at-compare">
+    <div class="rc-lbl mb12">Оберіть 2 результати для порівняння</div>
+    <div class="compare-grid" id="compare-grid"></div>
+    <div id="compare-out"></div>
+  </div>
+
+  <!-- Export -->
+  <div class="atp" id="at-export">
+    <div class="card mb12">
+      <div class="rc-lbl mb8">Експорт даних</div>
+      <div class="rc-body mb16">Завантажте всі дані платформи у форматі JSON або CSV для подальшого аналізу.</div>
+      <div class="brow">
+        <button class="bp" onclick="exportJSON()">⬇ Завантажити JSON</button>
+        <button class="bs" onclick="exportCSV()">⬇ Завантажити CSV</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="rc-lbl mb8">Загальна аналітика</div>
+      <div id="admin-analytics"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ══════════════════════════════════════════
+//  PERSISTENT STORAGE BACKEND
+// ══════════════════════════════════════════
+const DB = {
+  async getUsers(){ try{const r=await window.storage.get('users');return r?JSON.parse(r.value):{}}catch(e){return{}} },
+  async setUsers(d){ await window.storage.set('users',JSON.stringify(d)) },
+  async getResults(){ try{const r=await window.storage.get('all-results');return r?JSON.parse(r.value):[]}catch(e){return[]} },
+  async setResults(d){ await window.storage.set('all-results',JSON.stringify(d)) },
+  async getUserResults(uid){ try{const r=await window.storage.get('res-'+uid);return r?JSON.parse(r.value):[]}catch(e){return[]} },
+  async setUserResults(uid,d){ await window.storage.set('res-'+uid,JSON.stringify(d)) },
+  // shared = false (user storage)
+  async saveProfile(uid,data){ await window.storage.set('profile-'+uid,JSON.stringify(data)) },
+  async getProfile(uid){ try{const r=await window.storage.get('profile-'+uid);return r?JSON.parse(r.value):null}catch(e){return null} },
+};
+
+// ══════════════════════════════════════════
+//  APP STATE
+// ══════════════════════════════════════════
+const S = {
+  user: null,       // current logged-in user {uid, name, email, age, isAdmin}
+  guest: false,
+  answers: { b1:{}, b2:{}, b3:{}, abs:5 },
+  b1Q: 1, b2Q: 1, b3Q: 1,
+  result: null,
+  selDur: 3, selFreq: 2,
+  selProf: null,
+  selCat: 'Всі',
+  compareIds: [],
+  isReg: false,     // auth mode
+};
+
+const G = id => document.getElementById(id);
+const $ = q => document.querySelector(q);
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+const stepNames = { intro:'Вступ', auth:'Профіль', b1:'Блок 1', b2:'Блок 2', b3:'Блок 3', result:'Результат', profile:'Мій профіль', admin:'Адмін', 'saved-view':'Перегляд' };
+const stepIdx = { intro:0, auth:0, b1:1, b2:2, b3:3, result:4, profile:0, admin:0, 'saved-view':0 };
+let curScr = 'intro';
+function goTo(id) {
+  G('scr-'+curScr).classList.remove('on');
+  G('scr-'+id).classList.add('on');
+  curScr = id;
+  const idx = stepIdx[id] ?? 0;
+  for(let i=0;i<5;i++){
+    const el=G('sd'+i);
+    if(!el) continue;
+    el.className='sdot'+(i<idx?' done':i===idx?' active':'');
+  }
+  G('stepLbl').textContent = stepNames[id]||'';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
+async function initApp() {
+  // Check for admin query param
+  const params = new URLSearchParams(location.search);
+  if(params.get('admin')==='1'){ S.user={uid:'admin',name:'Admin',email:'admin',isAdmin:true}; updateUserUI(); goTo('admin'); loadAdmin(); return; }
+
+  const saved = localStorage.getItem('stride-session');
+  if(saved) {
+    try {
+      const sess = JSON.parse(saved);
+      const users = await DB.getUsers();
+      if(users[sess.uid] && users[sess.uid].pass === sess.pass) {
+        S.user = { uid:sess.uid, name:users[sess.uid].name, email:users[sess.uid].email, age:users[sess.uid].age, isAdmin:users[sess.uid].isAdmin||false };
+        updateUserUI();
+      }
+    } catch(e) { localStorage.removeItem('stride-session'); }
+  }
+}
+
+function updateUserUI() {
+  if(S.user) {
+    G('userAvatar').textContent = S.user.name[0].toUpperCase();
+    G('userLabel').textContent = S.user.name;
+    G('adminBtn').style.display = S.user.isAdmin ? 'flex' : 'none';
+    G('save-btn').textContent = '💾 Зберегти в профіль';
+  } else {
+    G('userAvatar').textContent = '?';
+    G('userLabel').textContent = 'Увійти';
+    G('adminBtn').style.display = 'none';
+  }
+}
+
+function goUserArea() {
+  if(S.user) { loadProfile(); goTo('profile'); }
+  else { S.isReg = false; updateAuthUI(); goTo('auth'); }
+}
+
+function updateAuthUI() {
+  G('auth-title').textContent = S.isReg ? 'Створити акаунт' : 'Увійти в профіль';
+  G('auth-sub').textContent = S.isReg ? 'Заповни дані для реєстрації' : 'Збережи свої результати та відстежуй прогрес';
+  G('auth-reg-fields').style.display = S.isReg ? 'block' : 'none';
+  G('auth-submit').textContent = S.isReg ? 'Зареєструватись →' : 'Увійти →';
+  G('auth-toggle').textContent = S.isReg ? 'Вже є акаунт? Увійти' : 'Немає акаунту? Зареєструватись';
+  G('auth-error').style.display = 'none';
+}
+function toggleAuth() { S.isReg = !S.isReg; updateAuthUI(); }
+
+async function authSubmit() {
+  const email = G('auth-email').value.trim();
+  const pass = G('auth-pass').value;
+  if(!email||!pass) return showErr('Заповніть усі поля');
+
+  const users = await DB.getUsers();
+  const uid = btoa(email).replace(/=/g,'');
+
+  if(S.isReg) {
+    const name = G('auth-name').value.trim();
+    const age = G('auth-age').value;
+    if(!name) return showErr('Вкажіть ім\'я');
+    if(users[uid]) return showErr('Email вже зареєстровано');
+    users[uid] = { name, email, age:+age||0, pass: simpleHash(pass), isAdmin: Object.keys(users).length===0 };
+    await DB.setUsers(users);
+    S.user = { uid, name, email, age:+age||0, isAdmin:users[uid].isAdmin };
+    localStorage.setItem('stride-session', JSON.stringify({uid, pass:simpleHash(pass)}));
+    showToast('Акаунт створено! 🎉');
+  } else {
+    if(!users[uid] || users[uid].pass !== simpleHash(pass)) return showErr('Невірний email або пароль');
+    S.user = { uid, name:users[uid].name, email, age:users[uid].age, isAdmin:users[uid].isAdmin||false };
+    localStorage.setItem('stride-session', JSON.stringify({uid, pass:simpleHash(pass)}));
+    showToast('Ласкаво просимо, '+S.user.name+'!');
+  }
+  updateUserUI();
+  if(S.result) goTo('result');
+  else goTo('intro');
+}
+
+function simpleHash(s) {
+  let h=0; for(let i=0;i<s.length;i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0;
+  return h.toString(36);
+}
+function showErr(msg) { G('auth-error').textContent=msg; G('auth-error').style.display='block'; }
+
+function continueGuest() { S.guest=true; G('save-btn').textContent='💾 Зберегти (потрібен акаунт)'; goTo('intro'); }
+
+function logout() {
+  S.user=null; S.guest=false;
+  localStorage.removeItem('stride-session');
+  updateUserUI(); goTo('intro');
+  showToast('До зустрічі!');
+}
+
+// ══════════════════════════════════════════
+//  TEST QUESTIONS DATA
+// ══════════════════════════════════════════
+const B1QS = [
+  { n:'Запитання 1 з 3', q:'Ти отримав доступ до складної системи, яка працює — але ніхто не знає як. Твій перший крок?', ctx:'Це може бути незрозумілий код, економіка міста або правила нової гри.',
+    opts:[{v:'analysis',t:'Буду ламати її по частинах, щоб побачити, що відвалиться'},{v:'synthesis',t:'Спостерігатиму за входом і виходом, щоб вивести загальну закономірність'},{v:'algorithm',t:'Шукатиму документацію або аналоги з минулого досвіду'}]},
+  { n:'Запитання 2 з 3', q:'Що тебе більше захоплює при вивченні нової теми?', ctx:null,
+    opts:[{v:'deep',t:'Занурення в одну деталь до повного розуміння — поки не «дійду до дна»'},{v:'wide',t:'Швидке охоплення всієї картини — мені важливий контекст, а не деталі'},{v:'mixed',t:'Спочатку загальна картина, потім — занурення в ключові вузли'}]},
+  { n:'Запитання 3 з 3', q:'Наскільки тобі комфортно пояснювати поняття «справедливість» без жодного прикладу з реального життя?', ctx:null, scale:true },
+];
+const B2QS = [
+  { n:'Запитання 1 з 3', q:'Що змушує тебе забути про обід?', ctx:null,
+    opts:[{v:'intel',t:'Пошук помилки в логіці або задачі, яка не давала спокою'},{v:'result',t:'Створення чогось гарного, що всі оцінять'},{v:'social',t:'Організація чогось для інших — щоб всім було добре'}]},
+  { n:'Запитання 2 з 3', q:'Ти працюєш над проєктом. Що тебе зупинить швидше?', ctx:null,
+    opts:[{v:'physical',t:'Фізична втома — просто хочу спати'},{v:'bored',t:'Нудьга — я вже зрозумів, як це працює, далі нецікаво'},{v:'fear',t:'Страх помилитися або бути осудженим'}]},
+  { n:'Запитання 3 з 3', q:'Як ти зазвичай виконуєш великі завдання?', ctx:null,
+    opts:[{v:'flow',t:'Занурюсь на 3–4 години в одну задачу без перерв'},{v:'multi',t:'Перемикаюсь між кількома завданнями, так мені легше'},{v:'deadline',t:'Починаю активно лише коли є дедлайн і тиск'}]},
+];
+const B3QS = [
+  { n:'Запитання 1 з 3', q:'Ти витратив місяць на теорію — і в останній момент знайшов критичну помилку. Твоя реакція?', ctx:null,
+    opts:[{v:'assertive',t:'Спокійно проаналізую помилку — вона дає нове розуміння. Почну заново з кращими даними.'},{v:'turbulent',t:'Відчую сильне розчарування, зроблю довгу паузу, перш ніж повернутися.'},{v:'avoid',t:'Спробую «підігнати» дані, щоб не переробляти все.'}]},
+  { n:'Запитання 2 з 3', q:'Тобі дали завдання — але без інструкцій, термінів і критеріїв оцінки. Твій стан?', ctx:null,
+    opts:[{v:'free',t:'Чудово, я сам вирішу, як це зробити краще'},{v:'coord',t:'Це дратує — мені потрібні хоча б базові координати'},{v:'stuck',t:'Не можу почати — незрозуміло, що вважається успіхом'}]},
+  { n:'Запитання 3 з 3', q:'Якщо твоя ідея зустрічає сильну критику від команди — що ти робиш?', ctx:null,
+    opts:[{v:'defend',t:'Аргументовано захищаю, якщо впевнений у логіці'},{v:'listen',t:'Уважно слухаю та інтегрую слушні зауваження'},{v:'withdraw',t:'Відступаю — критика сильно впливає на мою впевненість'}]},
+];
+
+// ══════════════════════════════════════════
+//  BLOCK 1
+// ══════════════════════════════════════════
+let b1Q=1, b2Q=1, b3Q=1;
+function startTest() {
+  resetAll(); goTo('b1'); renderB1Q();
+}
+function renderB1Q() {
+  G('pb1').style.width=(b1Q/3*100)+'%';
+  const q=B1QS[b1Q-1];
+  let h=`<div class="q-wrap"><div class="q-n">${q.n}</div><div class="q-txt">${q.q}</div>`;
+  if(q.ctx) h+=`<div class="q-ctx">${q.ctx}</div>`;
+  if(q.scale){
+    h+=`<div class="scale-wrap"><div class="sc-row"><span class="sc-l">Некомфортно</span><input type="range" min="1" max="10" value="${S.answers.abs}" class="scale-slider" oninput="S.answers.abs=+this.value;G('absVal').textContent=this.value;updateAbsDesc(this.value);G('b1next').disabled=false"><span class="sc-v" id="absVal">${S.answers.abs}</span></div><div class="sc-d" id="absDesc"></div><div style="text-align:right;font-size:12px;color:var(--muted)">Дуже комфортно</div></div>`;
+  } else {
+    h+=`<div class="opts">${q.opts.map((o,i)=>`<button class="opt${S.answers.b1[b1Q]===o.v?' sel':''}" onclick="pickB1(${i},this,'${o.v}')"><span class="ol">${String.fromCharCode(65+i)}</span>${o.t}</button>`).join('')}</div>`;
+  }
+  h+=`</div>`;
+  G('b1q-wrap').innerHTML=h;
+  G('b1next').disabled = !(S.answers.b1[b1Q]||q.scale);
+  if(q.scale) updateAbsDesc(S.answers.abs);
+}
+function pickB1(i,el,v){ G('b1q-wrap').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); S.answers.b1[b1Q]=v; G('b1next').disabled=false; }
+function updateAbsDesc(v){ const m={1:'Сильна перевага конкретики',2:'Перевага конкретики',3:'Конкретика важливіша',4:'Невелика перевага конкретики',5:'Нейтральний рівень',6:'Невелика перевага абстракції',7:'Комфортна робота з абстракцією',8:'Сильний абстрактний процесинг',9:'Дуже потужна абстракція',10:'Найвищий рівень абстракції'}; const el=G('absDesc'); if(el) el.textContent=m[v]||''; }
+function b1Next(){
+  if(b1Q<3){ b1Q++; renderB1Q(); G('b1next').disabled=true; }
+  else { goTo('b2'); renderB2Q(); }
+}
+function b1Back(){ if(b1Q>1){ b1Q--; renderB1Q(); G('b1next').disabled=false; } else goTo('intro'); }
+
+// BLOCK 2
+function renderB2Q() {
+  G('pb2').style.width=(b2Q/3*100)+'%';
+  const q=B2QS[b2Q-1];
+  let h=`<div class="q-wrap"><div class="q-n">${q.n}</div><div class="q-txt">${q.q}</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt${S.answers.b2[b2Q]===o.v?' sel':''}" onclick="pickB2(${i},this,'${o.v}')"><span class="ol">${String.fromCharCode(65+i)}</span>${o.t}</button>`).join('')}</div></div>`;
+  G('b2q-wrap').innerHTML=h;
+  G('b2next').disabled=!S.answers.b2[b2Q];
+}
+function pickB2(i,el,v){ G('b2q-wrap').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); S.answers.b2[b2Q]=v; G('b2next').disabled=false; }
+function b2Next(){
+  if(b2Q<3){ b2Q++; renderB2Q(); G('b2next').disabled=true; }
+  else { goTo('b3'); renderB3Q(); }
+}
+
+// BLOCK 3
+function renderB3Q() {
+  G('pb3').style.width=(b3Q/3*100)+'%';
+  const q=B3QS[b3Q-1];
+  let h=`<div class="q-wrap"><div class="q-n">${q.n}</div><div class="q-txt">${q.q}</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt${S.answers.b3[b3Q]===o.v?' sel':''}" onclick="pickB3(${i},this,'${o.v}')"><span class="ol">${String.fromCharCode(65+i)}</span>${o.t}</button>`).join('')}</div></div>`;
+  G('b3q-wrap').innerHTML=h;
+  G('b3next').disabled=!S.answers.b3[b3Q];
+}
+function pickB3(i,el,v){ G('b3q-wrap').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); S.answers.b3[b3Q]=v; G('b3next').disabled=false; }
+
+// ══════════════════════════════════════════
+//  CALCULATE RESULT
+// ══════════════════════════════════════════
+const PROFILE_DATA = {
+  'Системний Архітектор': {
+    tagline: 'Твій мозок оптимізований під побудову логічних моделей у хаосі. Ти бачиш структури там, де інші бачать лише шум.',
+    superpower: 'Інтелектуальна незворушність',
+    superpowerDesc: 'Здатність приймати рішення раціонально навіть у кризових ситуаціях. Це робить тебе потенційно сильним антикризовим менеджером або стратегом.',
+    blindspot: 'Емоційна сліпота',
+    blindspotDesc: 'Через власну впевненість ти можеш ігнорувати емоційні сигнали інших людей або знецінювати їхні переживання як «нелогічні».',
+    trajectory: 'T-Shaped · Верситаліст',
+    trajectoryDesc: 'Глибока база в одній системі + розуміння суміжних сфер. Ідеально для лідерів команд та стратегів.',
+    learningPath: 'Вертикаль: Системний аналіз, математичне моделювання або Computer Science. Горизонталь: Психологія поведінки, проєктний менеджмент, основи права та ІВ.',
+    opMap: [
+      { phase:'Місяць 1–2', label:'Toolkit', desc:'Python/R або UML-діаграми, Zettelkasten як зовнішній мозок' },
+      { phase:'Місяць 3–6', label:'Sandbox', desc:'Хакатони, олімпіади або перший цифровий мікро-продукт (MVP)' },
+      { phase:'Місяць 7–12', label:'Impact', desc:'Перший реальний клієнт, стажування або наукова публікація' },
+    ],
+    future: [
+      { name:'High-End Tech Strategist', desc:'Архітектура взаємодії між ШІ та великими бізнес-системами', color:'#534AB7', fit:'95%' },
+      { name:'Independent Research Entrepreneur', desc:'Власний інтелектуальний бізнес або консалтинг', color:'#1D9E75', fit:'88%' },
+      { name:'Scientific Architect', desc:'Виявлення закономірностей у біотехнологіях, космосі або квантових системах', color:'#D85A30', fit:'82%' },
+    ],
+    scenarios:[{name:'High-End Tech Strategist',fit:'95%',color:'#534AB7'},{name:'Independent Research Entrepreneur',fit:'88%',color:'#1D9E75'},{name:'Scientific Architect',fit:'82%',color:'#D85A30'}],
+    warnings:[{text:'Ризик «Вежі зі слонової кістки»: зберігай контакт із реальними результатами праці.'},{text:'Ризик «Пастки експерта»: шукай сфери з нескінченною складністю, щоб не нудьгувати.'}],
+    cogWeight:8, energyWeight:7, adaptWeight:7,
+    visionTemplate: (d,f) => `За ${d} місяців інтенсивної роботи (${f} зустрічі на тиждень) ти — незалежний архітектор рішень, який не лише будує ідеальні моделі, а й впроваджує їх у реальні системи з мінімальною бюрократичною надбудовою. Твоє портфоліо містить щонайменше один завершений інтелектуальний продукт, який демонструє твою здатність проєктувати та масштабувати складні рішення.`,
+  },
+  'Синтетичний Дослідник': {
+    tagline: 'Ти збираєш пазли з різних галузей і бачиш зв\'язки, які інші пропускають. Твоя сила — у створенні нових концепцій.',
+    superpower: 'Міждисциплінарний синтез',
+    superpowerDesc: 'Здатність бачити закономірності та зв\'язки між абсолютно різними системами. Ти генеруєш ідеї, які виникають на перетині дисциплін.',
+    blindspot: 'Когнітивна інерція',
+    blindspotDesc: 'Занадто довге обдумування ідеального рішення замість швидкого тестування робочої, але неідеальної моделі.',
+    trajectory: 'X-Shaped · Поліматист',
+    trajectoryDesc: 'Синтез знань із абсолютно різних галузей. Ідеально для інноваторів та підприємців, які створюють нові ринки.',
+    learningPath: 'Вертикаль: Одна «якірна» дисципліна (Економіка, Біологія або CS). Горизонталь: Дизайн-мислення, футурологія, поведінкова психологія — все що «не за профілем».',
+    opMap: [
+      { phase:'Місяць 1–2', label:'Mapping', desc:'Побудова власної карти знань — зв\'язок між 3+ дисциплінами в одному проєкті' },
+      { phase:'Місяць 3–6', label:'Bridge', desc:'Кейс-дослідження на межі дисциплін — пошук «невидимих» зв\'язків' },
+      { phase:'Місяць 7–12', label:'Concept', desc:'Перша авторська концепція або методологія, яку ти можеш захистити публічно' },
+    ],
+    future:[{name:'Concept Developer',fit:'91%',color:'#534AB7'},{name:'Strategic Consultant',fit:'85%',color:'#1D9E75'},{name:'Futurologist / Foresight Analyst',fit:'79%',color:'#BA7517'}],
+    scenarios:[{name:'Concept Developer',fit:'91%',color:'#534AB7'},{name:'Strategic Consultant',fit:'85%',color:'#1D9E75'},{name:'Futurologist / Foresight Analyst',fit:'79%',color:'#BA7517'}],
+    warnings:[{text:'Ризик «Горизонту ідей»: навчись доводити ідеї від абстракції до MVP.'},{text:'Ризик «Паралелізму»: занадто багато паралельних проєктів знижує глибину кожного.'}],
+    cogWeight:7, energyWeight:6, adaptWeight:5,
+    visionTemplate: (d,f) => `За ${d} місяців (${f} зустрічі на тиждень) ти маєш завершену авторську концепцію або міждисциплінарний проєкт, що демонструє твою унікальну здатність бачити зв'язки між несхожими системами. Ти вмієш не лише генерувати ідеї, а й «приземляти» їх у форматі, зрозумілому для зовнішньої аудиторії.`,
+  },
+  'Глибинний Спеціаліст': {
+    tagline: 'Твоя сила — у граничній концентрації. Ти здатен досягти рідкісної глибини знань у своїй галузі.',
+    superpower: 'Гранична концентрація',
+    superpowerDesc: 'Здатність занурюватись у тему на рівень, недоступний більшості людей. Ти здатен побачити деталі, які пропускають «широкі фахівці».',
+    blindspot: 'Чутливість до зовнішньої оцінки',
+    blindspotDesc: 'Реакція на критику може тимчасово блокувати продуктивність. Тобі важливо навчитись відокремлювати критику ідеї від критики особистості.',
+    trajectory: 'I-Shaped · Deep Specialist',
+    trajectoryDesc: 'Граничне занурення в одну вузьку тему. Ідеально для науковців та висококваліфікованих техніків, де цінується глибина.',
+    learningPath: 'Вертикаль: Обери ОДНУ вузьку тему і йди до дна — 80% зусиль туди. Горизонталь: Лише один суміжний модуль — «Як пояснити свою роботу іншим» (Метод Фейнмана, пітч-формат).',
+    opMap: [
+      { phase:'Місяць 1–2', label:'Deep Dive', desc:'Читання першоджерел, наукових статей, розбір найскладніших кейсів у своїй ніші' },
+      { phase:'Місяць 3–6', label:'Experiment', desc:'Власний мікро-експеримент або дослідження у вибраній вузькій темі' },
+      { phase:'Місяць 7–12', label:'Publish', desc:'Перший публічний результат — стаття, доповідь або завершений проєкт глибокого рівня' },
+    ],
+    future:[{name:'Applied Engineer / Scientist',fit:'93%',color:'#1D9E75'},{name:'Cybersecurity Specialist',fit:'86%',color:'#534AB7'},{name:'AI Systems Developer',fit:'80%',color:'#BA7517'}],
+    scenarios:[{name:'Applied Engineer / Scientist',fit:'93%',color:'#1D9E75'},{name:'Cybersecurity Specialist',fit:'86%',color:'#534AB7'},{name:'AI Systems Developer',fit:'80%',color:'#BA7517'}],
+    warnings:[{text:'Ризик «Ізоляції»: регулярно комунікуй результати своєї роботи зовні.'},{text:'Інвестуй у навичку «продажу ідеї» — перетворення логіки на цінність для інших.'}],
+    cogWeight:6, energyWeight:5, adaptWeight:3,
+    visionTemplate: (d,f) => `За ${d} місяців (${f} зустрічі на тиждень) ти маєш перший публічний результат у своїй вузькій ніші — дослідження, проєкт або рішення задачі, яку більшість вважала нерозв'язною. Ти навчився не лише йти вглиб, а й пояснювати свої знання зрозумілою мовою для зовнішньої аудиторії.`,
+  },
+  'Адаптивний Стратег': {
+    tagline: 'Ти вміло балансуєш між аналізом і дією. Твоя сила — у здатності адаптуватися та вести інших у невизначеності.',
+    superpower: 'Ситуаційна гнучкість',
+    superpowerDesc: 'Здатність ефективно перемикатися між режимами роботи залежно від задачі. Ти бачиш не лише що робити, а й коли і як.',
+    blindspot: 'Фокус під тиском',
+    blindspotDesc: 'В умовах невизначеності можлива розпорошеність між завданнями. Тобі важливо вміти будувати власні структури, коли зовнішніх правил немає.',
+    trajectory: 'T-Shaped · Версатиліст',
+    trajectoryDesc: 'Глибока база + розуміння суміжних сфер. Сильна позиція для лідерства, менеджменту та підприємництва.',
+    learningPath: 'Вертикаль: Системне мислення та стратегічне планування як база. Горизонталь: Фінанси, психологія команди, технологічний мінімум (data literacy).',
+    opMap: [
+      { phase:'Місяць 1–2', label:'System', desc:'Побудова власної системи управління задачами та пріоритетами (GTD/PKM)' },
+      { phase:'Місяць 3–6', label:'Lead', desc:'Перший командний проєкт або ініціатива в реальному середовищі' },
+      { phase:'Місяць 7–12', label:'Scale', desc:'Масштабування проєкту або перехід до ролі «ключового гравця» в команді' },
+    ],
+    future:[{name:'Project Lead / Team Architect',fit:'88%',color:'#534AB7'},{name:'Innovation Manager',fit:'83%',color:'#1D9E75'},{name:'Startup Founder',fit:'77%',color:'#D85A30'}],
+    scenarios:[{name:'Project Lead / Team Architect',fit:'88%',color:'#534AB7'},{name:'Innovation Manager',fit:'83%',color:'#1D9E75'},{name:'Startup Founder',fit:'77%',color:'#D85A30'}],
+    warnings:[{text:'Будуй систему — не покладайся тільки на адаптивність, створюй стабільні процеси.'},{text:'Знайди свою «вертикаль» — хоча б одну сферу для глибокого розвитку.'}],
+    cogWeight:5, energyWeight:5, adaptWeight:6,
+    visionTemplate: (d,f) => `За ${d} місяців (${f} зустрічі на тиждень) ти переходиш від ролі «виконавця» до ролі «архітектора» — людини, яка не просто реагує на зміни, а задає напрямок. У тебе є власна система прийняття рішень і перший реальний досвід лідерства в умовах невизначеності.`,
+  },
+};
+
+function calcResult() {
+  const a1=S.answers.b1, a2=S.answers.b2, a3=S.answers.b3, abs=S.answers.abs;
+  let cogScore=0, energyScore=0, adaptScore=0;
+
+  if(a1[1]==='synthesis') cogScore+=2; else if(a1[1]==='analysis') cogScore+=1;
+  if(a1[2]==='deep') cogScore+=2; else if(a1[2]==='mixed') cogScore+=1;
+  if(abs>=7) cogScore+=2; else if(abs>=4) cogScore+=1;
+
+  if(a2[1]==='intel') energyScore+=3; else if(a2[1]==='result') energyScore+=1;
+  if(a2[2]==='bored') energyScore+=2; else if(a2[2]==='physical') energyScore+=1;
+  if(a2[3]==='flow') energyScore+=2; else if(a2[3]==='deadline') energyScore+=1;
+
+  if(a3[1]==='assertive') adaptScore+=3; else if(a3[1]==='turbulent') adaptScore+=1;
+  if(a3[2]==='free') adaptScore+=2; else if(a3[2]==='coord') adaptScore+=1;
+  if(a3[3]==='defend') adaptScore+=2; else if(a3[3]==='listen') adaptScore+=1;
+
+  let profile;
+  if(cogScore>=4 && energyScore>=5 && adaptScore>=5) profile='Системний Архітектор';
+  else if(cogScore>=3 && energyScore>=4) profile='Синтетичний Дослідник';
+  else if(adaptScore<=3) profile='Глибинний Спеціаліст';
+  else profile='Адаптивний Стратег';
+
+  const pd = PROFILE_DATA[profile];
+  const maxC=6, maxE=7, maxA=7;
+  const cogPct=Math.round(Math.min(cogScore,maxC)/maxC*100);
+  const enPct=Math.round(Math.min(energyScore,maxE)/maxE*100);
+  const adPct=Math.round(Math.min(adaptScore,maxA)/maxA*100);
+
+  S.result = { profile, tagline:pd.tagline, cogScore, energyScore, adaptScore, cogPct, enPct, adPct, pd, date: new Date().toISOString(), answers:{...S.answers} };
+
+  renderResult();
+  goTo('result');
+}
+
+// ══════════════════════════════════════════
+//  RENDER RESULT
+// ══════════════════════════════════════════
+function renderResult() {
+  const r=S.result, pd=r.pd;
+  G('r-name').textContent=r.profile;
+  G('r-tagline').textContent=r.tagline;
+
+  // ── TAB: MAIN PROFILE ──
+  G('r-grid-main').innerHTML=`
+    <div class="rc"><div class="rc-lbl">Суперсила</div><div class="rc-title">${pd.superpower}</div><div class="rc-body">${pd.superpowerDesc}</div></div>
+    <div class="rc"><div class="rc-lbl">Сліпа зона</div><div class="rc-title">${pd.blindspot}</div><div class="rc-body">${pd.blindspotDesc}</div></div>`;
+
+  G('r-card-dims').innerHTML=`
+    <div class="rc-lbl mb8">Когнітивний профіль</div>
+    <div class="dim-bars">
+      ${[['Когнітивний',r.cogPct,'#534AB7'],['Енергетичний',r.enPct,'#1D9E75'],['Адаптивність',r.adPct,'#D85A30']].map(([n,v,c])=>
+        `<div class="dim-row"><span class="dim-name">${n}</span><div class="dim-track"><div class="dim-fill" style="width:${v}%;background:${c}"></div></div><span class="dim-val">${v}%</span></div>`
+      ).join('')}
+    </div>`;
+
+  G('r-card-scenarios').innerHTML=`
+    <div class="rc-lbl mb8">Сценарії самореалізації</div>
+    <div class="scenarios">${pd.scenarios.map(s=>`<div class="scenario"><div class="sc-dot" style="background:${s.color}"></div><span class="sc-name">${s.name}</span><span class="sc-fit">${s.fit}</span></div>`).join('')}</div>`;
+
+  G('r-card-warnings').innerHTML=`
+    <div class="rc-lbl mb8">Системні застереження</div>
+    <div class="warns">${pd.warnings.map(w=>`<div class="warn-item"><span class="warn-ico">⚠</span><span class="warn-txt">${w.text}</span></div>`).join('')}</div>`;
+
+  // ── TAB: TRAJECTORY ──
+  G('r-grid-traj').innerHTML=`
+    <div class="rc full"><div class="rc-lbl">Траєкторія навчання</div><div class="rc-title">${pd.trajectory}</div><div class="rc-body">${pd.trajectoryDesc}</div></div>`;
+
+  G('r-card-traj-detail').innerHTML=`
+    <div class="rc-lbl mb8">Деталь траєкторії</div>
+    <div class="rc-body">${pd.learningPath}</div>`;
+
+  G('r-op-map').innerHTML=pd.opMap.map((s,i)=>`
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;${i>0?'border-top:.5px solid var(--bdr)':''}">
+      <div style="flex-shrink:0;width:90px;font-family:var(--fm);font-size:9px;color:var(--muted)">${s.phase}</div>
+      <div><span style="font-family:var(--fm);font-size:10px;padding:2px 8px;border-radius:100px;background:var(--acc-l);color:var(--acc);margin-bottom:4px;display:inline-block">${s.label}</span><div class="rc-body">${s.desc}</div></div>
+    </div>`).join('');
+
+  G('r-learning-path').innerHTML=`<div class="rc-body">${pd.learningPath}</div>`;
+
+  G('r-future').innerHTML=`
+    <div class="scenarios" style="gap:9px">${pd.future.map(s=>`
+      <div class="scenario" style="flex-direction:column;align-items:flex-start;gap:4px">
+        <div style="display:flex;align-items:center;gap:8px;width:100%">
+          <div class="sc-dot" style="background:${s.color}"></div>
+          <span class="sc-name">${s.name}</span>
+          <span class="sc-fit">${s.fit}</span>
+        </div>
+        <div class="rc-body" style="padding-left:15px">${s.desc}</div>
+      </div>`).join('')}
+    </div>`;
+
+  // ── TAB: ROADMAP (init selectors) ──
+  buildDurFreq();
+  G('roadmap-output').style.display='none';
+
+  // ── TAB: PROF ──
+  renderProfs();
+}
+
+// ══════════════════════════════════════════
+//  ROADMAP BUILDER
+// ══════════════════════════════════════════
+function buildDurFreq() {
+  G('dur-grid').innerHTML=[1,2,3,4,5,6,7,8,9,10,11,12].map(d=>`<button class="dur-btn${d===S.selDur?' sel':''}" onclick="selDur(${d},this)">${d} міс.</button>`).join('');
+  G('freq-grid').innerHTML=[1,2,3,4,5,6,7].map(f=>`<button class="freq-btn${f===S.selFreq?' sel':''}" onclick="selFreq(${f},this)">${f}×/тижд.</button>`).join('');
+}
+function selDur(d,el){ S.selDur=d; G('dur-grid').querySelectorAll('.dur-btn').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); G('dur-badge').textContent=d+' міс.'; }
+function selFreq(f,el){ S.selFreq=f; G('freq-grid').querySelectorAll('.freq-btn').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); G('freq-badge').textContent=f+'×/тижд.'; }
+
+function buildRoadmap() {
+  const d=S.selDur, f=S.selFreq, pd=S.result?.pd;
+  if(!pd) return;
+  const tot=Math.round(d*4*f);
+  const mode=f<=2?'Аналітичний режим':f<=4?'Режим занурення':'High-Speed режим';
+
+  // Vision
+  G('vis-dur').textContent=d+' місяців';
+  G('vis-title').textContent=`${d} міс. · ${mode} · ${tot} сесій загалом`;
+  G('vis-body').textContent=pd.visionTemplate(d,f);
+
+  // Timeline
+  const stages=[];
+  if(d>=1) stages.push({n:'М1',col:'#534AB7',bg:'var(--acc-l)',per:'Місяць 1',name:'Запуск системи',desc:'Аналіз профілю, контракт розвитку, PKM (Zettelkasten/Notion), ліквідація головного бар\'єру.',pills:['PKM','Контракт','Інвентаризація знань']});
+  if(d>=3) stages.push({n:'М3',col:'#1D9E75',bg:'var(--tl)',per:'Місяці 2–3',name:'Прототипування',desc:'Перший реальний мікро-проєкт (MVP). Ментор ставить «неможливе» завдання — вирішити реальну задачу з нуля.',pills:['Hard Skills',pd.opMap[0]?.label||'Core Skill','Feedback Loop']});
+  if(d>=6) stages.push({n:'М6',col:'#D85A30',bg:'var(--cl)',per:'Місяці 4–6',name:'Масштабування',desc:'Хакатони, олімпіади або перші замовлення. Пітч власного проєкту перед аудиторією.',pills:['Пітч-формат','Зовнішнє середовище','Портфоліо']});
+  if(d>=9) stages.push({n:'М9',col:'#BA7517',bg:'var(--al)',per:'Місяці 7–9',name:'Верифікація',desc:'Перевірка системи реальністю. Стажування, перші партнери або наукові публікації.',pills:['Стажування','Партнери','Публікація']});
+  if(d>=12) stages.push({n:'М12',col:'#639922',bg:'var(--gl)',per:'Місяці 10–12',name:'Автономія',desc:'Траєкторія навчання на наступні 3 роки. Готове портфоліо. Вибір ВНЗ або кар\'єрного напрямку.',pills:['Портфоліо','Траєкторія 3р.','Незалежність']});
+
+  G('rm-timeline').innerHTML=stages.map(s=>`
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${s.bg};color:${s.col};border-color:${s.col}">${s.n}</div>
+      <div class="tl-card">
+        <div class="tl-period">${s.per} · ${Math.round(tot/stages.length)} сесій</div>
+        <div class="tl-name">${s.name}</div>
+        <div class="tl-desc">${s.desc}</div>
+        <div class="tl-pills">${s.pills.map(p=>`<span class="tl-pill">${p}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+
+  // Layers
+  G('rm-layers').innerHTML=`
+    <div class="rc card"><div class="rc-lbl">Hard Skills · Що я роблю</div><div class="rc-body">Конкретні інструменти, яких не вистачає когнітивному профілю: мови програмування, моделювання, аналіз даних або системний дизайн.</div></div>
+    <div class="rc card"><div class="rc-lbl">Systemic Skills · Як я думаю</div><div class="rc-body">Прискорення рішень, Pivot Speed — навичка швидко відмовлятися від нежиттєздатних ідей та переходити до нової гіпотези.</div></div>
+    <div class="rc card full"><div class="rc-lbl">Energy Guard · Як я не вигораю</div><div class="rc-body">Deep Work блоки по 3–4 год. Делегація рутини ШІ. Ліміт зустрічей. Щотижневий енергетичний аудит: що давало ресурс, що забирало.</div></div>`;
+
+  G('roadmap-output').style.display='block';
+  G('roadmap-output').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ══════════════════════════════════════════
+//  PROFESSIONS (optional)
+// ══════════════════════════════════════════
+const PROFS=[
+  {id:'aieng',name:'AI/ML Engineer',cat:'Tech',desc:'Розробка та навчання моделей ШІ',req:{cog:82,adp:70,en:65}},
+  {id:'sysarch',name:'Systems Architect',cat:'Tech',desc:'Проєктування складних IT-систем',req:{cog:90,adp:75,en:60}},
+  {id:'datascien',name:'Data Scientist',cat:'Tech',desc:'Аналіз даних та побудова моделей',req:{cog:85,adp:65,en:60}},
+  {id:'cybersec',name:'Cybersecurity Spec.',cat:'Tech',desc:'Захист цифрових систем від загроз',req:{cog:80,adp:70,en:55}},
+  {id:'uxres',name:'UX Researcher',cat:'Design',desc:'Дослідження досвіду користувачів',req:{cog:65,adp:72,en:70}},
+  {id:'stratcons',name:'Strategy Consultant',cat:'Business',desc:'Розробка бізнес-стратегій',req:{cog:85,adp:80,en:70}},
+  {id:'ventcap',name:'Venture Capitalist',cat:'Finance',desc:'Інвестиції в стартапи та інновації',req:{cog:80,adp:85,en:75}},
+  {id:'biotech',name:'Biotech Researcher',cat:'Science',desc:'Науково-дослідна робота у біотехнологіях',req:{cog:92,adp:58,en:65}},
+  {id:'quant',name:'Quant Analyst',cat:'Finance',desc:'Математичне моделювання фінансів',req:{cog:95,adp:60,en:60}},
+  {id:'prodmgr',name:'Product Manager',cat:'Business',desc:'Управління розробкою продукту',req:{cog:72,adp:80,en:72}},
+  {id:'neuros',name:'Neuroscientist',cat:'Science',desc:'Дослідження мозку та нейронних систем',req:{cog:95,adp:55,en:65}},
+  {id:'roboeng',name:'Robotics Engineer',cat:'Tech',desc:'Розробка роботизованих систем',req:{cog:88,adp:70,en:62}},
+  {id:'ethicai',name:'AI Ethics Researcher',cat:'Humanities',desc:'Дослідження етики штучного інтелекту',req:{cog:80,adp:75,en:68}},
+  {id:'spaceing',name:'Aerospace Engineer',cat:'Engineering',desc:'Проєктування космічних та авіасистем',req:{cog:92,adp:68,en:62}},
+  {id:'climat',name:'Climate Scientist',cat:'Science',desc:'Дослідження кліматичних систем',req:{cog:85,adp:65,en:65}},
+  {id:'bioinfo',name:'Bioinformatician',cat:'Science',desc:'Аналіз біологічних даних за допомогою ІТ',req:{cog:88,adp:62,en:62}},
+];
+const CATS=['Всі',...[...new Set(PROFS.map(p=>p.cat))]];
+function renderProfs(){
+  G('cats-wrap').innerHTML=CATS.map(c=>`<button class="cat-btn${c==='Всі'?' on':''}" onclick="selCat('${c}',this)">${c}</button>`).join('');
+  filterProfs();
+}
+function selCat(c,el){ S.selCat=c; G('cats-wrap').querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on'); filterProfs(); }
+function filterProfs(){
+  const q=(G('ps-input')||{value:''}).value.toLowerCase();
+  const f=PROFS.filter(p=>(S.selCat==='Всі'||p.cat===S.selCat)&&(p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));
+  G('profs-grid').innerHTML=f.map(p=>`<div class="pi${S.selProf?.id===p.id?' sel':''}" onclick="selectProf('${p.id}',this)"><div class="pi-name">${p.name}</div><div class="pi-cat">${p.cat}</div><div class="pi-desc">${p.desc}</div></div>`).join('');
+}
+function selectProf(id,el){
+  G('profs-grid').querySelectorAll('.pi').forEach(i=>i.classList.remove('sel'));
+  el.classList.add('sel');
+  S.selProf=PROFS.find(p=>p.id===id);
+  calcProfMatch();
+}
+function calcProfMatch(){
+  if(!S.selProf||!S.result) return;
+  const p=S.selProf, r=S.result;
+  const cogM=100-Math.max(0,Math.abs(r.cogPct-(p.req.cog||75)));
+  const adpM=100-Math.max(0,Math.abs(r.adPct-(p.req.adp||70)));
+  const enM=100-Math.max(0,Math.abs(r.enPct-(p.req.en||65)));
+  const pct=Math.max(30,Math.min(96,Math.round((cogM+adpM+enM)/3)));
+  const col=pct>75?'#1D9E75':pct>55?'#BA7517':'#D85A30';
+  G('mg-num').textContent=pct+'%'; G('mg-num').style.color=col;
+  G('mg-lbl').textContent='відповідність · '+p.name;
+  G('mg-fill').style.width=pct+'%'; G('mg-fill').style.background=col;
+  const gap=100-pct;
+  G('prof-strengths').innerHTML=`<div class="tag">${r.profile}</div>${cogM>70?'<div class="tag">Когнітивна відповідність</div>':''} ${adpM>70?'<div class="tag">Рівень адаптивності</div>':''}`;
+  G('prof-gaps').innerHTML=`${cogM<50?'<div class="tag">↑ Когнітивне навантаження</div>':''}${adpM<50?'<div class="tag">↑ Адаптивність у хаосі</div>':''}${enM<50?'<div class="tag">↑ Енергозатрати</div>':''}${gap<20?'<div class="rc-body">Ти вже дуже близький до ідеальної відповідності!</div>':''}`;
+  G('prof-skills').innerHTML=`<div class="tag">Профільна мова (Python/R/MATLAB)</div><div class="tag">Системне мислення</div><div class="tag">Data Literacy</div><div class="tag">Agile/Scrum</div>`;
+  G('prof-match-out').style.display='block';
+}
+
+// ══════════════════════════════════════════
+//  SAVE / PROFILE
+// ══════════════════════════════════════════
+async function saveResult() {
+  if(!S.user) { goTo('auth'); return; }
+  if(!S.result) return;
+  const entry = { ...S.result, id: Date.now().toString(), uid: S.user.uid, userName: S.user.name };
+  // user results
+  const userRes = await DB.getUserResults(S.user.uid);
+  userRes.unshift(entry);
+  await DB.setUserResults(S.user.uid, userRes);
+  // all results (shared for admin)
+  const allRes = await DB.getResults();
+  allRes.unshift(entry);
+  if(allRes.length>500) allRes.length=500;
+  await DB.setResults(allRes);
+  showToast('Результат збережено! ✅');
+  G('save-btn').textContent='✅ Збережено';
+  setTimeout(()=>{ G('save-btn').textContent='💾 Зберегти в профіль'; },3000);
+}
+
+async function loadProfile() {
+  if(!S.user) return;
+  G('ph-avatar').textContent=S.user.name[0].toUpperCase();
+  G('ph-name').textContent=S.user.name;
+  G('ph-meta').textContent=`${S.user.email} · Вік: ${S.user.age||'—'} · Тестів пройдено:`;
+  const res = await DB.getUserResults(S.user.uid);
+  G('ph-meta').textContent=`${S.user.email} · Вік: ${S.user.age||'—'} · Тестів: ${res.length}`;
+  if(res.length===0){
+    G('history-list').innerHTML=`<div class="card" style="text-align:center;color:var(--muted);padding:24px">Результатів ще немає.<br><button class="bp" style="margin-top:12px" onclick="goTo('intro')">Пройти тест →</button></div>`;
+    return;
+  }
+  G('history-list').innerHTML=res.map(r=>`
+    <div class="history-item" onclick="viewSaved('${r.id}')">
+      <div class="hi-badge">${r.profile}</div>
+      <div class="hi-name">${r.profile}</div>
+      <div class="hi-date">${new Date(r.date).toLocaleDateString('uk-UA')}</div>
+      <span class="hi-caret">›</span>
+    </div>`).join('');
+}
+
+async function viewSaved(id) {
+  const res = await DB.getUserResults(S.user.uid);
+  const r = res.find(x=>x.id===id);
+  if(!r) return;
+  G('sv-date').textContent=new Date(r.date).toLocaleDateString('uk-UA',{day:'numeric',month:'long',year:'numeric'});
+  const pd=PROFILE_DATA[r.profile]||PROFILE_DATA['Адаптивний Стратег'];
+  G('sv-content').innerHTML=`
+    <div class="res-header">
+      <div class="res-badge">Карта Потенціалу · S.T.R.I.D.E.</div>
+      <div class="res-name">${r.profile}</div>
+      <div class="res-tagline">${r.tagline||pd.tagline}</div>
+    </div>
+    <div class="rgrid mb16">
+      <div class="rc"><div class="rc-lbl">Суперсила</div><div class="rc-title">${pd.superpower}</div><div class="rc-body">${pd.superpowerDesc}</div></div>
+      <div class="rc"><div class="rc-lbl">Сліпа зона</div><div class="rc-title">${pd.blindspot}</div><div class="rc-body">${pd.blindspotDesc}</div></div>
+    </div>
+    <div class="card mb12">
+      <div class="rc-lbl mb8">Когнітивний профіль</div>
+      <div class="dim-bars">
+        ${[['Когнітивний',r.cogPct,'#534AB7'],['Енергетичний',r.enPct,'#1D9E75'],['Адаптивність',r.adPct,'#D85A30']].map(([n,v,c])=>
+          `<div class="dim-row"><span class="dim-name">${n}</span><div class="dim-track"><div class="dim-fill" style="width:${v}%;background:${c}"></div></div><span class="dim-val">${v}%</span></div>`
+        ).join('')}
+      </div>
+    </div>
+    <div class="card mb12">
+      <div class="rc-lbl">Траєкторія</div>
+      <div class="rc-title">${pd.trajectory}</div>
+      <div class="rc-body">${pd.trajectoryDesc}</div>
+    </div>
+    <div class="card">
+      <div class="rc-lbl mb8">Сценарії</div>
+      <div class="scenarios">${pd.scenarios.map(s=>`<div class="scenario"><div class="sc-dot" style="background:${s.color}"></div><span class="sc-name">${s.name}</span><span class="sc-fit">${s.fit}</span></div>`).join('')}</div>
+    </div>`;
+  goTo('saved-view');
+}
+
+// ══════════════════════════════════════════
+//  ADMIN PANEL
+// ══════════════════════════════════════════
+async function loadAdmin() {
+  const users = await DB.getUsers();
+  const allRes = await DB.getResults();
+  const userArr = Object.entries(users).map(([uid,u])=>({uid,...u}));
+
+  // Stats
+  const profileCounts={};
+  allRes.forEach(r=>{ profileCounts[r.profile]=(profileCounts[r.profile]||0)+1; });
+  G('admin-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${userArr.length}</div><div class="stat-lbl">Зареєстровано</div></div>
+    <div class="stat-card"><div class="stat-num">${allRes.length}</div><div class="stat-lbl">Проходжень</div></div>
+    <div class="stat-card"><div class="stat-num">${Math.round(allRes.reduce((a,r)=>a+(r.cogPct||0),0)/(allRes.length||1))}%</div><div class="stat-lbl">Сер. когніт.</div></div>`;
+
+  // Profile chart
+  const colors={'Системний Архітектор':'#534AB7','Синтетичний Дослідник':'#1D9E75','Глибинний Спеціаліст':'#D85A30','Адаптивний Стратег':'#BA7517'};
+  G('admin-profiles-chart').innerHTML=Object.entries(profileCounts).map(([p,c])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${colors[p]||'#999'};flex-shrink:0"></div>
+      <div style="font-size:13px;flex:1">${p}</div>
+      <div style="width:180px;height:8px;background:var(--bg3);border-radius:100px;overflow:hidden"><div style="width:${Math.round(c/allRes.length*100)}%;height:100%;background:${colors[p]||'#999'}"></div></div>
+      <div style="font-family:var(--fm);font-size:11px;color:var(--muted);width:30px;text-align:right">${c}</div>
+    </div>`).join('')||'<div class="rc-body">Немає даних</div>';
+
+  // Recent
+  G('admin-recent').innerHTML=allRes.slice(0,8).map(r=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--bdr2)">
+      <div class="tbl-badge">${r.profile}</div>
+      <div style="font-size:13px;flex:1">${r.userName||'Гість'}</div>
+      <div style="font-family:var(--fm);font-size:10px;color:var(--muted)">${new Date(r.date).toLocaleDateString('uk-UA')}</div>
+    </div>`).join('')||'<div class="rc-body">Немає даних</div>';
+
+  renderAdminUsers();
+  renderCompare(allRes);
+  renderAnalytics(allRes, userArr);
+}
+function renderAdminUsers(){
+  (async()=>{
+    const users=await DB.getUsers();
+    const allRes=await DB.getResults();
+    const q=(G('admin-user-search')||{value:''}).value.toLowerCase();
+    const arr=Object.entries(users).map(([uid,u])=>({uid,...u})).filter(u=>!q||u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
+    G('admin-users-body').innerHTML=arr.map(u=>{
+      const cnt=allRes.filter(r=>r.uid===u.uid).length;
+      const last=allRes.find(r=>r.uid===u.uid);
+      return `<tr>
+        <td>${u.name}${u.isAdmin?'<span class="tbl-badge" style="margin-left:6px">Admin</span>':''}</td>
+        <td style="color:var(--muted)">${u.email}</td>
+        <td style="color:var(--muted)">${u.age||'—'}</td>
+        <td><span class="tbl-badge">${last?.profile||'—'}</span></td>
+        <td style="font-family:var(--fm)">${cnt}</td>
+        <td style="font-family:var(--fm);color:var(--muted)">${last?new Date(last.date).toLocaleDateString('uk-UA'):'—'}</td>
+        <td><button class="tbl-action" onclick="adminViewUser('${u.uid}')">Переглянути</button></td>
+      </tr>`;
+    }).join('');
+  })();
+}
+async function adminViewUser(uid){
+  const users=await DB.getUsers();
+  const u=users[uid];
+  const res=await DB.getUserResults(uid);
+  if(!res.length) return showToast('Результатів немає');
+  S.user={uid,name:u.name,email:u.email,age:u.age,isAdmin:false};
+  await loadProfile();
+  goTo('profile');
+}
+function renderCompare(allRes){
+  G('compare-grid').innerHTML=allRes.slice(0,12).map(r=>`
+    <div class="compare-card${S.compareIds.includes(r.id)?' sel':''}" onclick="toggleCompare('${r.id}',this)">
+      <div class="cc-name">${r.userName||'Гість'}</div>
+      <div class="cc-prof">${r.profile}</div>
+      <div class="cc-date">${new Date(r.date).toLocaleDateString('uk-UA')}</div>
+    </div>`).join('')||'<div class="rc-body">Немає результатів для порівняння</div>';
+}
+function toggleCompare(id,el){
+  if(S.compareIds.includes(id)){ S.compareIds=S.compareIds.filter(x=>x!==id); el.classList.remove('sel'); }
+  else if(S.compareIds.length<2){ S.compareIds.push(id); el.classList.add('sel'); }
+  if(S.compareIds.length===2) showCompare();
+}
+async function showCompare(){
+  const allRes=await DB.getResults();
+  const [r1,r2]=[allRes.find(r=>r.id===S.compareIds[0]),allRes.find(r=>r.id===S.compareIds[1])];
+  if(!r1||!r2) return;
+  G('compare-out').innerHTML=`
+    <div class="compare-result">
+      <div class="rc-lbl mb12">Порівняння: ${r1.userName||'Гість'} vs ${r2.userName||'Гість'}</div>
+      ${[['Когнітивний',r1.cogPct,r2.cogPct,'#534AB7'],['Енергетичний',r1.enPct,r2.enPct,'#1D9E75'],['Адаптивність',r1.adPct,r2.adPct,'#D85A30']].map(([l,a,b,c])=>`
+        <div class="compare-row">
+          <div class="cr-label">${l}</div>
+          <div class="cr-bars">
+            <div class="cr-bar-row"><div class="cr-bar"><div class="cr-bar-f" style="width:${a||0}%;background:${c}"></div></div><span class="cr-name">${a||0}%</span></div>
+            <div class="cr-bar-row"><div class="cr-bar"><div class="cr-bar-f" style="width:${b||0}%;background:${c}88"></div></div><span class="cr-name">${b||0}%</span></div>
+          </div>
+        </div>`).join('')}
+      <div class="sep"></div>
+      <div class="rc-body">
+        <strong>${r1.userName||'Г1'}</strong>: ${r1.profile}<br>
+        <strong>${r2.userName||'Г2'}</strong>: ${r2.profile}
+      </div>
+      <button class="bg_" onclick="S.compareIds=[];G('compare-out').innerHTML='';renderCompare(allRes)">Скинути</button>
+    </div>`;
+}
+function renderAnalytics(allRes, userArr){
+  if(!allRes.length){ G('admin-analytics').innerHTML='<div class="rc-body">Немає даних</div>'; return; }
+  const avgCog=Math.round(allRes.reduce((a,r)=>a+(r.cogPct||0),0)/allRes.length);
+  const avgEn=Math.round(allRes.reduce((a,r)=>a+(r.enPct||0),0)/allRes.length);
+  const avgAd=Math.round(allRes.reduce((a,r)=>a+(r.adPct||0),0)/allRes.length);
+  G('admin-analytics').innerHTML=`
+    <div class="dim-bars">
+      <div class="dim-row"><span class="dim-name">Сер. Когніт.</span><div class="dim-track"><div class="dim-fill" style="width:${avgCog}%;background:#534AB7"></div></div><span class="dim-val">${avgCog}%</span></div>
+      <div class="dim-row"><span class="dim-name">Сер. Енергія</span><div class="dim-track"><div class="dim-fill" style="width:${avgEn}%;background:#1D9E75"></div></div><span class="dim-val">${avgEn}%</span></div>
+      <div class="dim-row"><span class="dim-name">Сер. Адапт.</span><div class="dim-track"><div class="dim-fill" style="width:${avgAd}%;background:#D85A30"></div></div><span class="dim-val">${avgAd}%</span></div>
+    </div>
+    <div class="sep"></div>
+    <div class="rc-body">Всього тестувань: ${allRes.length} · Унікальних учасників: ${[...new Set(allRes.map(r=>r.uid))].length}</div>`;
+}
+
+// Export
+async function exportJSON(){
+  const users=await DB.getUsers(), allRes=await DB.getResults();
+  const data=JSON.stringify({users,results:allRes},null,2);
+  downloadFile('stride-export.json','application/json',data);
+}
+async function exportCSV(){
+  const allRes=await DB.getResults();
+  const rows=[['Дата','Ім\'я','Email','Профіль','Когніт.%','Енерг.%','Адапт.%'],...allRes.map(r=>[r.date,r.userName||'',r.email||'',r.profile,r.cogPct||0,r.enPct||0,r.adPct||0])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  downloadFile('stride-export.csv','text/csv',csv);
+}
+function downloadFile(name,type,data){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type}));
+  a.download=name; a.click();
+}
+
+// ══════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════
+function atab(el,id){ G('admin-tabs').querySelectorAll('.atab').forEach(t=>t.classList.remove('on')); el.classList.add('on'); ['at-stats','at-users','at-compare','at-export'].forEach(t=>G(t).classList.remove('on')); G(id).classList.add('on'); if(id==='at-stats'||id==='at-users'||id==='at-compare'||id==='at-export') loadAdmin(); }
+function rtab(el,id){ G('scr-result').querySelectorAll('.tab').forEach(t=>t.classList.remove('on')); el.classList.add('on'); G('scr-result').querySelectorAll('.tp').forEach(t=>t.classList.remove('on')); G(id).classList.add('on'); }
+function showToast(msg){ const t=G('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+function resetAll(){
+  S.answers={b1:{},b2:{},b3:{},abs:5}; S.result=null; S.selDur=3; S.selFreq=2; S.selProf=null; S.selCat='Всі';
+  b1Q=1; b2Q=1; b3Q=1;
+  G('roadmap-output').style.display='none';
+  G('prof-match-out').style.display='none';
+  G('dur-badge').textContent='3 місяці'; G('freq-badge').textContent='2×/тижд.';
+  G('save-btn').textContent='💾 Зберегти в профіль';
+}
+
+// ── INIT ──
+(async()=>{
+  // Fallback if persistent storage not available
+  if(!window.storage) {
+    window.storage = {
+      _d:{},
+      get: async(k)=>{ const v=localStorage.getItem('stride-db-'+k); return v?{key:k,value:v}:null; },
+      set: async(k,v)=>{ localStorage.setItem('stride-db-'+k,v); return {key:k,value:v}; },
+      delete: async(k)=>{ localStorage.removeItem('stride-db-'+k); return {key:k,deleted:true}; },
+      list: async()=>({keys:[]}),
+    };
+  }
+  await initApp();
+})();
+</script>
+</body>
+</html>
